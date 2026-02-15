@@ -54,7 +54,20 @@ document_processing:
     min_chunk_size: 256   # Minimum chunk size
     max_chunk_size: 1536  # Maximum chunk size
 
-    # Threshold mode settings (alternative)
+  # Contextual chunking (replaces overlap)
+  # Each chunk includes a short summary of the previous chunk
+  # More token-efficient than overlapping text
+  contextual_chunking:
+    enabled: true
+    summary_max_chars: 150  # Max characters for context summary
+    carry_across_pages: true  # Carry context from last chunk to next page
+    summary_prefix_he: "הקשר קודם"  # Hebrew prefix for context
+    summary_prefix_en: "Previous context"  # English prefix
+    # If using LLM for summaries (optional, more accurate but slower)
+    use_llm_summarizer: false
+    llm_model: "gpt-4o-mini"  # Cheap model for summaries
+
+    # Threshold mode settings (alternative, not used when mode=dynamic)
     # Page size thresholds (in characters)
     thresholds:
       - max_page_chars: 500      # Very small pages (e.g., cover pages, headers)

@@ -2,6 +2,7 @@
 """
 Test script to demonstrate dynamic page-size based chunking.
 Shows how chunk size varies based on page content size.
+Demonstrates contextual chunking (summaries instead of overlap).
 """
 
 import sys
@@ -14,6 +15,66 @@ from src.processing.chunker import (
     get_chunk_config_for_page,
     get_dynamic_chunk_config,
 )
+
+
+def demo_contextual_chunking():
+    """Demonstrate contextual chunking with summaries."""
+    print("=" * 70)
+    print("CONTEXTUAL CHUNKING (Summaries Instead of Overlap)")
+    print("=" * 70)
+    print()
+
+    # Sample Hebrew insurance text
+    sample_text = """
+פרק 1: הגדרות כלליות
+
+ביטוח רכב מקיף הוא ביטוח המכסה נזקים לרכב המבוטח עצמו, בנוסף לכיסוי צד שלישי.
+הפוליסה כוללת כיסוי לגניבה, שריפה, נזקי טבע ותאונות עצמיות.
+
+פרק 2: כיסויים עיקריים
+
+הכיסויים העיקריים בפוליסה כוללים:
+1. נזק מקרי לרכב - כיסוי לנזקים שנגרמו לרכב בתאונה
+2. גניבה - כיסוי במקרה של גניבת הרכב או חלקים ממנו
+3. שריפה - כיסוי לנזקי שריפה לרכב
+4. נזקי טבע - כיסוי לנזקים מברד, שיטפון וכדומה
+
+פרק 3: חריגים
+
+הפוליסה אינה מכסה:
+- נזקים שנגרמו בזדון על ידי המבוטח
+- נזקים בזמן נהיגה תחת השפעת אלכוהול או סמים
+- נזקים לרכב שאינו כשיר לנסיעה
+- בלאי טבעי של הרכב
+
+פרק 4: תביעות
+
+במקרה של תביעה, יש לפנות למוקד השירות תוך 24 שעות מקרות האירוע.
+יש להגיש את המסמכים הבאים: טופס תביעה, צילום רישיון נהיגה, ודוח משטרה במידת הצורך.
+    """.strip()
+
+    chunker = AdaptiveChunker(doc_type="pdf", summary_max_chars=100)
+
+    # Chunk with context
+    chunks = chunker.chunk_page(sample_text, page_num=1)
+
+    print(f"Original text length: {len(sample_text)} chars")
+    print(f"Number of chunks: {len(chunks)}")
+    print()
+
+    for i, chunk in enumerate(chunks):
+        print(f"{'='*60}")
+        print(f"CHUNK {i+1}")
+        print(f"{'='*60}")
+        print(f"Has context: {chunk['metadata']['has_context']}")
+        if chunk.get('previous_summary'):
+            print(f"Previous summary: {chunk['previous_summary']}")
+        print(f"\nText ({chunk['metadata']['char_count']} chars):")
+        print("-" * 40)
+        print(chunk['text'][:300] + "..." if len(chunk['text']) > 300 else chunk['text'])
+        print()
+
+    print()
 
 
 def demo_dynamic_chunking():
@@ -110,6 +171,7 @@ def demo_document_chunking():
 
 
 if __name__ == "__main__":
+    demo_contextual_chunking()
     demo_dynamic_chunking()
     demo_mode_comparison()
     demo_document_chunking()

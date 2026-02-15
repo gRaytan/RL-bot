@@ -1,10 +1,15 @@
 """
 Adaptive chunking based on page size and document type.
 Implements intelligent chunking that adjusts chunk size based on content density.
+
+Features:
+- Dynamic chunk sizing based on page content
+- Contextual chunking: each chunk includes a summary of the previous chunk
+  (instead of overlapping text - more token efficient)
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Callable
 import yaml
 from pathlib import Path
 
@@ -13,8 +18,8 @@ from pathlib import Path
 class ChunkConfig:
     """Configuration for a specific chunk."""
     chunk_size: int
-    chunk_overlap: int
-    
+    chunk_overlap: int = 0  # Default to 0 - we use summaries instead
+
     def __repr__(self):
         return f"ChunkConfig(size={self.chunk_size}, overlap={self.chunk_overlap})"
 
@@ -63,7 +68,7 @@ def get_dynamic_chunk_config(page_chars: int, min_chunk: int = 256, max_chunk: i
 
     Formula: chunk_size = min_chunk + (page_chars / scale_factor)
     - Clamped between min_chunk and max_chunk
-    - Overlap is 10% of chunk size
+    - No overlap - we use contextual summaries instead
 
     Args:
         page_chars: Number of characters in the page
@@ -71,7 +76,7 @@ def get_dynamic_chunk_config(page_chars: int, min_chunk: int = 256, max_chunk: i
         max_chunk: Maximum chunk size (default: 1536)
 
     Returns:
-        ChunkConfig with dynamically calculated chunk_size and overlap
+        ChunkConfig with dynamically calculated chunk_size (no overlap)
     """
     # Scale factor: how many page chars per additional chunk token
     # ~4 chars per token, we want chunk to be ~1/4 to 1/2 of page
@@ -87,10 +92,8 @@ def get_dynamic_chunk_config(page_chars: int, min_chunk: int = 256, max_chunk: i
     chunk_size = (chunk_size // 64) * 64
     chunk_size = max(min_chunk, chunk_size)  # Ensure minimum
 
-    # Overlap is 10% of chunk size
-    chunk_overlap = max(25, chunk_size // 10)
-
-    return ChunkConfig(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    # No overlap - we use contextual summaries instead
+    return ChunkConfig(chunk_size=chunk_size, chunk_overlap=0)
 
 
 def get_chunk_config_for_page(
@@ -148,43 +151,94 @@ def get_chunk_config_for_page(
 class AdaptiveChunker:
     """
     Adaptive text chunker that adjusts chunk size based on page/content size.
+    Uses contextual summaries instead of overlap for better token efficiency.
     """
-    
-    def __init__(self, doc_type: str = "pdf"):
+
+    def __init__(
+        self,
+        doc_type: str = "pdf",
+        summarizer: Optional[Callable[[str], str]] = None,
+        summary_max_chars: int = 150,
+    ):
         """
         Initialize the adaptive chunker.
-        
+
         Args:
             doc_type: Document type for fallback chunking
+            summarizer: Function to generate summaries (async or sync)
+                       If None, uses simple extractive summary
+            summary_max_chars: Maximum characters for context summary
         """
         self.doc_type = doc_type
         self.config = load_config().get("document_processing", {})
-    
-    def chunk_page(self, page_text: str, page_num: int = 1) -> List[dict]:
+        self.summarizer = summarizer
+        self.summary_max_chars = summary_max_chars
+
+    def _extractive_summary(self, text: str) -> str:
+        """
+        Simple extractive summary - takes first sentence(s) up to max chars.
+        Used when no LLM summarizer is provided.
+        """
+        if not text:
+            return ""
+
+        # Try to get first complete sentence(s)
+        sentences = []
+        current = ""
+
+        for char in text:
+            current += char
+            if char in ".!?。؟":
+                sentences.append(current.strip())
+                current = ""
+                if len(" ".join(sentences)) >= self.summary_max_chars:
+                    break
+
+        summary = " ".join(sentences)
+        if len(summary) > self.summary_max_chars:
+            summary = summary[:self.summary_max_chars].rsplit(" ", 1)[0] + "..."
+
+        return summary if summary else text[:self.summary_max_chars] + "..."
+
+    def _generate_summary(self, text: str) -> str:
+        """Generate a summary of the text."""
+        if self.summarizer:
+            return self.summarizer(text)
+        return self._extractive_summary(text)
+
+    def chunk_page(
+        self,
+        page_text: str,
+        page_num: int = 1,
+        previous_context: str = "",
+    ) -> List[dict]:
         """
         Chunk a single page with adaptive chunk size.
-        
+        Each chunk includes context from the previous chunk.
+
         Args:
             page_text: Text content of the page
             page_num: Page number for metadata
-        
+            previous_context: Summary of previous chunk for context
+
         Returns:
             List of chunk dictionaries with text and metadata
         """
         chunk_config = get_chunk_config_for_page(page_text, self.doc_type)
         chunks = []
-        
+
         text = page_text.strip()
         if not text:
             return chunks
-        
+
         start = 0
         chunk_idx = 0
-        
+        current_context = previous_context
+
         while start < len(text):
             end = start + chunk_config.chunk_size
             chunk_text = text[start:end]
-            
+
             # Try to break at sentence/paragraph boundary
             if end < len(text):
                 # Look for natural break points
@@ -194,19 +248,32 @@ class AdaptiveChunker:
                         chunk_text = chunk_text[:last_sep + len(sep)]
                         end = start + len(chunk_text)
                         break
-            
+
+            # Build the full chunk with context
+            chunk_with_context = ""
+            if current_context:
+                chunk_with_context = f"[הקשר קודם: {current_context}]\n\n{chunk_text.strip()}"
+            else:
+                chunk_with_context = chunk_text.strip()
+
             chunks.append({
-                "text": chunk_text.strip(),
+                "text": chunk_with_context,
+                "raw_text": chunk_text.strip(),  # Original text without context
+                "previous_summary": current_context,
                 "metadata": {
                     "page": page_num,
                     "chunk_index": chunk_idx,
                     "chunk_size_used": chunk_config.chunk_size,
                     "char_count": len(chunk_text),
+                    "has_context": bool(current_context),
                 },
             })
-            
+
+            # Generate summary of this chunk for the next one
+            current_context = self._generate_summary(chunk_text.strip())
+
             chunk_idx += 1
-            start = end - chunk_config.chunk_overlap
+            start = end  # No overlap - we use summaries instead
             if start >= len(text):
                 break
 
@@ -215,29 +282,43 @@ class AdaptiveChunker:
     def chunk_document(
         self,
         pages: List[str],
-        doc_metadata: Optional[dict] = None
+        doc_metadata: Optional[dict] = None,
+        carry_context_across_pages: bool = True,
     ) -> List[dict]:
         """
         Chunk an entire document with multiple pages.
         Each page gets its own adaptive chunk size based on content density.
+        Context summaries are carried across chunks (and optionally across pages).
 
         Args:
             pages: List of page texts (index = page number - 1)
             doc_metadata: Optional metadata to include with each chunk
+            carry_context_across_pages: If True, last chunk's summary carries to next page
 
         Returns:
             List of all chunks with metadata
         """
         all_chunks = []
         doc_metadata = doc_metadata or {}
+        previous_context = ""  # Context from previous chunk
 
         for page_num, page_text in enumerate(pages, start=1):
-            page_chunks = self.chunk_page(page_text, page_num)
+            # Pass context from previous page/chunk
+            page_chunks = self.chunk_page(
+                page_text,
+                page_num,
+                previous_context=previous_context if carry_context_across_pages else ""
+            )
 
             for chunk in page_chunks:
                 chunk["metadata"].update(doc_metadata)
                 chunk["metadata"]["total_pages"] = len(pages)
                 all_chunks.append(chunk)
+
+            # Carry last chunk's context to next page
+            if page_chunks and carry_context_across_pages:
+                last_chunk = page_chunks[-1]
+                previous_context = self._generate_summary(last_chunk.get("raw_text", ""))
 
         # Add global chunk index
         for i, chunk in enumerate(all_chunks):
