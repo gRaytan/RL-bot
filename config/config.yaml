@@ -1,0 +1,194 @@
+# Harel Insurance Chatbot Configuration
+
+# Insurance Domains
+domains:
+  - car
+  - life
+  - travel
+  - health
+  - dental
+  - mortgage
+  - business
+  - apartment
+
+# Data Sources
+data_sources:
+  harel_base_url: "https://www.harel-group.co.il/insurance"
+  domain_urls:
+    car: "https://www.harel-group.co.il/insurance/car"
+    life: "https://www.harel-group.co.il/insurance/life"
+    travel: "https://www.harel-group.co.il/insurance/travel"
+    health: "https://www.harel-group.co.il/insurance/health"
+    dental: "https://www.harel-group.co.il/insurance/dental"
+    mortgage: "https://www.harel-group.co.il/insurance/mortgage"
+    business: "https://www.harel-group.co.il/insurance/business"
+    apartment: "https://www.harel-group.co.il/insurance/apartment"
+
+# Document Processing
+document_processing:
+  chunk_size: 1024  # Base chunk size
+  chunk_overlap: 100
+  preserve_structure: true
+  # Document-type specific chunking
+  chunk_sizes:
+    pdf: 1024
+    aspx: 768
+    table: 512
+    list: 256
+  chunk_overlaps:
+    pdf: 100
+    aspx: 80
+    table: 0
+    list: 50
+  supported_formats:
+    - aspx
+    - pdf
+    - html
+  languages:
+    - hebrew
+    - english
+
+# Embeddings
+embeddings:
+  model: "text-embedding-3-large"
+  dimension: 3072
+  batch_size: 100
+
+# Vector Database (Milvus)
+vector_db:
+  collection_name: "harel_insurance_kb"
+  index_type: "IVF_FLAT"
+  metric_type: "COSINE"
+  nlist: 1024
+  nprobe: 10
+
+# Retrieval
+retrieval:
+  top_k: 5
+  similarity_threshold: 0.7
+  enable_reranking: true
+  reranker_model: "cross-encoder/ms-marco-MiniLM-L-12-v2"
+  # Multi-strategy retrieval
+  strategies:
+    semantic: true
+    keyword: true  # BM25
+    hybrid: true
+  hybrid_weights:
+    semantic: 0.7
+    keyword: 0.3
+
+# LLM Configuration
+llm:
+  provider: "qwen"  # Options: qwen, openai, claude
+  primary_model: "Qwen/Qwen2.5-72B-Instruct"
+  fallback_model: "gpt-4o"
+  temperature: 0.1
+  max_tokens: 1000
+  timeout: 30
+  # Nebius Token Factory config
+  base_url: "${LLM_BASE_URL}"  # Set in .env
+
+# Agent Configuration (5-Agent Architecture)
+agents:
+  # Agent 1: Query Understanding & Decomposition
+  query_understanding:
+    model: "Qwen/Qwen2.5-72B-Instruct"
+    temperature: 0.0
+    skills:
+      - decompose_complex_query
+      - identify_implicit_intent
+      - classify_question_type
+      - detect_domain_overlap
+      - extract_entities
+
+  # Agent 2: Multi-Strategy Retrieval
+  retrieval:
+    enabled: true
+    strategies:
+      - semantic
+      - keyword
+      - hybrid
+
+  # Agent 3: Context Ranking & Filtering
+  ranking:
+    model: "cross-encoder/ms-marco-MiniLM-L-12-v2"
+    enable_mmr: true  # Maximal Marginal Relevance
+    diversity_lambda: 0.5
+
+  # Agent 4: Answer Generation & Citation
+  generation:
+    model: "Qwen/Qwen2.5-72B-Instruct"
+    temperature: 0.1
+    strict_grounding: true
+    citation_format: "[Source: {url}, Section: {section}, Page: {page}]"
+
+  # Agent 5: Verification & Quality Assurance
+  verification:
+    enabled: true
+    checks:
+      - citation_validation
+      - hallucination_detection
+      - completeness_check
+      - consistency_validation
+    hallucination_threshold: 0.1
+    completeness_threshold: 0.8
+      max_tokens: 1000
+  
+  synthesis:
+    enabled: true
+    model: "gpt-4o"
+    temperature: 0.2
+
+# Conversation Management
+conversation:
+  max_history: 5
+  enable_clarification: true
+  session_timeout: 1800  # 30 minutes
+
+# Evaluation
+evaluation:
+  metrics:
+    - answer_relevance
+    - faithfulness
+    - context_precision
+    - citation_accuracy
+    - hallucination_rate
+  
+  weights:
+    relevance: 0.65
+    citation_accuracy: 0.15
+    efficiency: 0.10
+    conversational_quality: 0.10
+
+# API Configuration
+api:
+  title: "Harel Insurance Chatbot API"
+  version: "1.0.0"
+  description: "Production-grade customer support chatbot for Harel Insurance"
+  enable_cors: true
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"
+  output:
+    - console
+    - file
+  file_path: "logs/app.log"
+
+# Performance
+performance:
+  enable_cache: true
+  cache_ttl: 3600
+  max_concurrent_requests: 10
+  request_timeout: 30
+
+# Monitoring
+monitoring:
+  enable_metrics: true
+  metrics_port: 9090
+  health_check_interval: 30
+
