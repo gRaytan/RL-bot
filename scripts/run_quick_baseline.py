@@ -3,9 +3,12 @@
 Quick baseline evaluation without RAGAS (faster, uses custom metrics only).
 Good for initial testing and iteration.
 
+Supports both OpenAI and Nebius Token Factory (Qwen models).
+
 Usage:
     python scripts/run_quick_baseline.py
-    python scripts/run_quick_baseline.py --model gpt-4o
+    python scripts/run_quick_baseline.py --model gpt-4o --provider openai
+    python scripts/run_quick_baseline.py --model Qwen/Qwen2.5-72B-Instruct --provider nebius
 """
 
 import argparse
@@ -24,6 +27,21 @@ from openai import OpenAI
 from tqdm import tqdm
 
 load_dotenv()
+
+
+def get_client(provider: str) -> OpenAI:
+    """Get the appropriate OpenAI-compatible client."""
+    if provider == "nebius":
+        api_key = os.getenv("LLM_API_KEY")
+        base_url = os.getenv("LLM_BASE_URL", "https://api.studio.nebius.ai/v1")
+        if not api_key:
+            raise ValueError("LLM_API_KEY not set for Nebius")
+        return OpenAI(api_key=api_key, base_url=base_url)
+    else:  # openai
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key or api_key == "your_openai_api_key_here":
+            raise ValueError("OPENAI_API_KEY not set")
+        return OpenAI(api_key=api_key)
 
 
 def load_dataset(path: str) -> list[dict]:
@@ -79,9 +97,9 @@ def check_correctness(expected: str, generated: str) -> bool:
     return overlap > 0.5
 
 
-def run_evaluation(model: str, questions: list[dict], strategy: str = "basic") -> list[dict]:
+def run_evaluation(model: str, questions: list[dict], strategy: str = "basic", provider: str = "nebius") -> list[dict]:
     """Run evaluation on all questions."""
-    client = OpenAI()
+    client = get_client(provider)
     results = []
     
     # Define prompt strategies
@@ -179,23 +197,30 @@ def print_summary(results: list[dict], model: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Quick baseline evaluation")
-    parser.add_argument("--model", default="gpt-4o", help="Model to test")
+    parser.add_argument("--model", default="Qwen/Qwen2.5-72B-Instruct", help="Model to test")
+    parser.add_argument("--provider", default="nebius", choices=["nebius", "openai"], help="API provider")
     parser.add_argument("--strategy", default="basic", choices=["basic", "strict"])
     parser.add_argument("--dataset", default="data/evaluation/dev_set.json")
     parser.add_argument("--output", default="data/evaluation/results/quick_results.json")
 
     args = parser.parse_args()
 
-    if not os.getenv("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY not set")
-        sys.exit(1)
+    # Validate API key based on provider
+    if args.provider == "nebius":
+        if not os.getenv("LLM_API_KEY"):
+            print("Error: LLM_API_KEY not set for Nebius")
+            sys.exit(1)
+    else:
+        if not os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY") == "your_openai_api_key_here":
+            print("Error: OPENAI_API_KEY not set")
+            sys.exit(1)
 
     print(f"Loading dataset from {args.dataset}...")
     questions = load_dataset(args.dataset)
     print(f"Loaded {len(questions)} questions")
 
-    print(f"\nRunning evaluation with {args.model} ({args.strategy} strategy)...")
-    results = run_evaluation(args.model, questions, args.strategy)
+    print(f"\nRunning evaluation with {args.model} via {args.provider} ({args.strategy} strategy)...")
+    results = run_evaluation(args.model, questions, args.strategy, args.provider)
 
     # Save results
     output_path = Path(args.output)
