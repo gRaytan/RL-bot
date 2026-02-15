@@ -9,12 +9,13 @@
 ## 🎯 Project Goal
 
 Build an end-to-end GenAI system that:
-- ✅ Answers customer questions across **8 insurance domains**
+- ✅ Answers customer questions across **8 insurance domains** (Car, Life, Travel, Health, Dental, Mortgage, Business, Apartment)
+- ✅ Uses **5-agent role-based architecture** (not 8 domain-specific agents)
 - ✅ Grounds every answer in official documentation with **explicit citations**
-- ✅ **Outperforms GPT-5 baseline** using retrieval and agentic design
+- ✅ **Outperforms GPT-5 baseline** using multi-strategy retrieval and verification
 - ✅ Achieves **<5% hallucination rate** and **>90% citation accuracy**
 
-**Domains**: Car, Life, Travel, Health, Dental, Mortgage, Business, Apartment
+**Key Innovation**: Instead of 8 domain-specific agents, we use 5 role-based agents that work across all domains, focusing on pipeline stages (understanding → retrieval → ranking → generation → verification).
 
 ---
 
