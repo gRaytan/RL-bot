@@ -29,6 +29,7 @@ document_processing:
   chunk_size: 1024  # Base chunk size
   chunk_overlap: 100
   preserve_structure: true
+
   # Document-type specific chunking
   chunk_sizes:
     pdf: 1024
@@ -40,6 +41,37 @@ document_processing:
     aspx: 80
     table: 0
     list: 50
+
+  # Page-size based chunking
+  # Smaller pages get smaller chunks to avoid padding/fragmentation
+  # Larger pages get larger chunks for better context
+  page_size_chunking:
+    enabled: true
+    mode: dynamic  # Options: dynamic, threshold, fixed
+
+    # Dynamic mode settings (recommended)
+    # chunk_size = min_chunk + (page_chars / 8), clamped to [min, max]
+    min_chunk_size: 256   # Minimum chunk size
+    max_chunk_size: 1536  # Maximum chunk size
+
+    # Threshold mode settings (alternative)
+    # Page size thresholds (in characters)
+    thresholds:
+      - max_page_chars: 500      # Very small pages (e.g., cover pages, headers)
+        chunk_size: 256
+        chunk_overlap: 25
+      - max_page_chars: 1500     # Small pages (e.g., summaries, short sections)
+        chunk_size: 512
+        chunk_overlap: 50
+      - max_page_chars: 3000     # Medium pages (typical content pages)
+        chunk_size: 768
+        chunk_overlap: 75
+      - max_page_chars: 6000     # Large pages (dense content)
+        chunk_size: 1024
+        chunk_overlap: 100
+      - max_page_chars: 999999   # Very large pages (tables, appendices)
+        chunk_size: 1536
+        chunk_overlap: 150
   supported_formats:
     - aspx
     - pdf
@@ -132,8 +164,8 @@ agents:
       - consistency_validation
     hallucination_threshold: 0.1
     completeness_threshold: 0.8
-      max_tokens: 1000
-  
+    max_tokens: 1000
+
   synthesis:
     enabled: true
     model: "gpt-4o"
