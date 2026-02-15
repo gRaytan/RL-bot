@@ -83,19 +83,61 @@ open http://localhost:8000/docs
 
 ## 🏗️ Architecture
 
+### 5-Agent Role-Based System
+
 ```
-User Query → Router Agent → Domain Agent(s) → RAG Pipeline → Grounded Answer
-                ↓                                    ↓
-         Classification                    Milvus Vector Search
-                                                     ↓
-                                          Context + Citations
+User Query
+    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Agent 1: Query Understanding & Decomposition                │
+│ • Breaks down complex queries into sub-questions            │
+│ • Identifies domains and intent                             │
+└─────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Agent 2: Multi-Strategy Retrieval                           │
+│ • Semantic search (dense vectors)                           │
+│ • Keyword search (BM25 sparse)                              │
+│ • Hybrid search (weighted combination)                      │
+└─────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Agent 3: Context Ranking & Filtering                        │
+│ • Cross-encoder re-ranking                                  │
+│ • Deduplication and diversity sampling (MMR)                │
+│ • Context compression                                       │
+└─────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Agent 4: Answer Generation & Citation                       │
+│ • Grounded generation (Qwen 2.5 72B)                        │
+│ • Inline citation attachment                                │
+│ • Multi-source synthesis                                    │
+└─────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Agent 5: Verification & Quality Assurance                   │
+│ • Citation validation                                       │
+│ • Hallucination detection                                   │
+│ • Completeness check                                        │
+└─────────────────────────────────────────────────────────────┘
+    ↓
+Grounded Answer + Citations
 ```
 
 **Key Components**:
-1. **Multi-Agent System**: Router + 8 domain-specific agents + synthesis agent
-2. **RAG Pipeline**: Docling parsing → Milvus retrieval → LLM generation
-3. **Evaluation Framework**: RAGAS + custom citation validator
-4. **FastAPI**: Production-ready REST API
+1. **5-Agent Pipeline**: Role-based agents with specialized skills (not domain-based)
+2. **Multi-Strategy Retrieval**: Semantic + Keyword + Hybrid search with cross-encoder re-ranking
+3. **Document-Type Aware Chunking**: 1024/768/512/256 tokens based on document type
+4. **Verification Layer**: Multi-stage quality assurance to catch errors
+5. **Model-Agnostic Design**: Easy to swap LLMs (Qwen, GPT, Claude)
+
+**Why This Architecture Wins**:
+- ✅ **Query Decomposition**: Handles complex multi-domain questions better than single-shot retrieval
+- ✅ **Multi-Strategy Retrieval**: Hybrid search (semantic + keyword) beats pure vector search
+- ✅ **Cross-Encoder Re-ranking**: Significantly improves relevance (65% of score!)
+- ✅ **Verification Layer**: Catches hallucinations and citation errors before submission
+- ✅ **Performance Optimizations**: Parallel retrieval, streaming, caching, speculative execution
 
 See [DESIGN.md](DESIGN.md) for detailed architecture.
 
@@ -141,17 +183,29 @@ harel-insurance-chatbot/
 
 ### Stage 2: RAG Pipeline (Week 2)
 - [ ] Parse documents with Docling
-- [ ] Implement intelligent chunking
-- [ ] Set up Milvus vector database
-- [ ] Build retrieval pipeline
-- [ ] Implement grounded answer generation
-- [ ] Beat baseline metrics
+- [ ] Implement document-type aware chunking
+  - [ ] PDF documents: 1024 tokens, 100 overlap
+  - [ ] ASPX web pages: 768 tokens, 80 overlap
+  - [ ] Tables: 512 tokens, 0 overlap
+  - [ ] Lists: 256 tokens, 50 overlap
+- [ ] Set up Milvus vector database (3072-dim)
+- [ ] Build multi-strategy retrieval pipeline
+  - [ ] Semantic search (dense vectors)
+  - [ ] Keyword search (BM25)
+  - [ ] Hybrid search (weighted combination)
+  - [ ] Cross-encoder re-ranking
+- [ ] Implement grounded answer generation (Qwen 2.5 72B)
+- [ ] Beat baseline metrics (+10% relevance)
 
-### Stage 3: Agentic System & API (Week 3)
-- [ ] Design multi-agent architecture
-- [ ] Implement router and domain agents
+### Stage 3: Multi-Agent System & API (Week 3)
+- [ ] Implement 5-agent architecture
+  - [ ] Agent 1: Query Understanding & Decomposition
+  - [ ] Agent 2: Multi-Strategy Retrieval
+  - [ ] Agent 3: Context Ranking & Filtering
+  - [ ] Agent 4: Answer Generation & Citation
+  - [ ] Agent 5: Verification & Quality Assurance
+- [ ] Add performance optimizations (caching, streaming, parallel retrieval)
 - [ ] Build FastAPI endpoint
-- [ ] Add conversation management
 - [ ] Deploy production system
 
 ### Stage 4: Optimization (Ongoing)
@@ -167,30 +221,38 @@ harel-insurance-chatbot/
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
 | **Document Processing** | [Docling](https://github.com/DS4SD/docling) | Parse ASPX + PDF with structure preservation |
-| **Vector Database** | [Milvus](https://milvus.io/) | Scalable semantic search |
+| **Vector Database** | [Milvus](https://milvus.io/) | Scalable semantic search (3072-dim vectors) |
 | **Agent Framework** | [LangChain](https://python.langchain.com/) | Multi-agent orchestration |
-| **Evaluation** | [RAGAS](https://docs.ragas.io/) + [Opik](https://www.comet.com/site/products/opik/) | RAG metrics + observability |
-| **API** | [FastAPI](https://fastapi.tiangolo.com/) | High-performance REST API |
-| **Embeddings** | OpenAI text-embedding-3-large | Multilingual embeddings (Hebrew/English) |
-| **LLM** | GPT-4o / Llama 3.1 / Mixtral | Answer generation |
+| **Evaluation** | [RAGAS](https://docs.ragas.io/) | RAG-specific metrics (faithfulness, relevance) |
+| **API** | [FastAPI](https://fastapi.tiangolo.com/) | High-performance async REST API |
+| **Embeddings** | OpenAI text-embedding-3-large | Best multilingual support (Hebrew/English, 3072-dim) |
+| **LLM (Primary)** | Qwen 2.5 72B (Nebius Token Factory) | Excellent multilingual, strong reasoning, cost-effective |
+| **LLM (Fallback)** | GPT-4o | Backup and comparison |
+| **Re-ranking** | cross-encoder/ms-marco-MiniLM-L-12-v2 | Improves retrieval precision |
 
 ---
 
 ## 📊 Evaluation Metrics
 
-| Metric | Weight | Target | Current |
-|--------|--------|--------|---------|
-| **Relevance** | 65% | +15% vs baseline | TBD |
-| **Citation Accuracy** | 15% | >90% | TBD |
-| **Efficiency** | 10% | <2s latency | TBD |
-| **Conversational Quality** | 10% | High clarity | TBD |
-| **Bonus: Voice** | +5% | Implemented | ❌ |
-| **Bonus: UI** | +5% | Implemented | ❌ |
+| Metric | Weight | Baseline (GPT-5) | Our Target | Improvement |
+|--------|--------|------------------|------------|-------------|
+| **Relevance** | 65% | 75% | **90%** | +15% |
+| **Citation Accuracy** | 15% | 85% | **95%** | +10% |
+| **Efficiency** | 10% | 90% | **85%** | -5% (acceptable) |
+| **Conversational Quality** | 10% | 80% | **90%** | +10% |
+| **Total Weighted Score** | 100% | **78.5%** | **90.25%** | **+11.75%** |
+| **Bonus: Voice** | +5% | ❌ | Lower priority | Week 3 if time |
+| **Bonus: UI** | +5% | ❌ | Not planned | Focus on core |
 
-**Key Targets**:
-- Hallucination rate: <5%
-- Cost per query: <$0.05
-- Latency (p95): <2 seconds
+**Key Performance Indicators**:
+- **Hallucination rate**: <5%
+- **Cost per query**: <$0.05
+- **Latency p50**: <1s
+- **Latency p95**: <2s
+- **Latency p99**: <3s
+- **Answer relevance (RAGAS)**: >0.9
+- **Context precision (RAGAS)**: >0.85
+- **Faithfulness (RAGAS)**: >0.9
 
 ---
 
@@ -199,10 +261,10 @@ harel-insurance-chatbot/
 **Team Size**: 3-4 participants
 
 **Recommended Roles**:
-- **Data & Retrieval Lead**: Web scraping, document processing, vector database, retrieval optimization
-- **Agent & Generation Lead**: Agent architecture, prompt engineering, answer generation, citation handling
-- **Evaluation & API Lead**: Evaluation framework, baseline testing, FastAPI development, performance optimization
-- **UI/Voice Lead** (Optional): Web interface, voice integration, user experience
+- **Data & Retrieval Lead**: Web scraping, document processing, vector database, multi-strategy retrieval, re-ranking
+- **Agent & Generation Lead**: 5-agent architecture, prompt engineering, answer generation, citation handling, verification
+- **Evaluation & API Lead**: Evaluation framework, baseline testing, FastAPI development, performance optimization (caching, streaming, async)
+- **Voice Lead** (Optional, Week 3): Voice integration (Whisper STT, TTS), Hebrew voice recognition
 
 ---
 
