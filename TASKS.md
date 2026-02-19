@@ -29,14 +29,19 @@
 ### Phase 2: RAG Implementation
 **Goal:** Improve accuracy from 55% → 85%+
 
-#### 2.1 Document Ingestion Pipeline [IN PROGRESS]
+#### 2.1 Document Ingestion Pipeline [COMPLETE] ✅
 - [x] Create `src/ingestion/__init__.py`
 - [x] **Document Registry** - Track indexed files for incremental updates
 - [x] **Topic Taxonomy** - Define topic hierarchy (9 domains + subtopics)
 - [x] **PDF Processor** - Extract text with Docling (page-by-page)
-- [ ] **Topic Classifier** - Classify chunks into topics
-- [ ] **Document Indexer** - Orchestrate full pipeline
-- [ ] **Ingestion CLI** - `scripts/ingest_documents.py`
+- [x] **Topic Classifier** - Classify chunks into topics (integrated in indexer)
+- [x] **Document Indexer** - Orchestrate full pipeline
+- [x] **Ingestion CLI** - `scripts/ingest_documents.py`
+
+**Results:**
+- 71 PDFs indexed → 2,602 chunks
+- 545 pages processed
+- Chunks stored in `data/processed/chunks.json` (6MB)
 
 #### 2.2 Vector Store Setup [NOT STARTED]
 - [ ] Set up embeddings (text-embedding-3-large, 3072-dim)

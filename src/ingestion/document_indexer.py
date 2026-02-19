@@ -105,14 +105,16 @@ class DocumentIndexer:
     def __init__(
         self,
         registry_path: str = "data/processed/registry.json",
+        chunks_path: str = "data/processed/chunks.json",
         taxonomy_path: Optional[str] = None,
         use_ocr: bool = False,
     ):
         """
         Initialize the document indexer.
-        
+
         Args:
             registry_path: Path to document registry JSON
+            chunks_path: Path to chunks JSON store
             taxonomy_path: Path to saved taxonomy (optional)
             use_ocr: Enable OCR for scanned PDFs
         """
@@ -120,12 +122,46 @@ class DocumentIndexer:
         self.chunker = AdaptiveChunker(doc_type="pdf")
         self.taxonomy = TopicTaxonomy()
         self.registry = DocumentRegistry(registry_path)
-        
+        self.chunks_path = Path(chunks_path)
+
         # Load saved taxonomy if provided
         if taxonomy_path and Path(taxonomy_path).exists():
             self.taxonomy = TopicTaxonomy.load(taxonomy_path)
-        
-        logger.info(f"DocumentIndexer initialized: registry={registry_path}")
+
+        # Load existing chunks
+        self._chunks_store: dict[str, dict] = {}
+        self._load_chunks()
+
+        logger.info(f"DocumentIndexer initialized: registry={registry_path}, chunks={chunks_path}")
+
+    def _load_chunks(self):
+        """Load existing chunks from JSON file."""
+        if self.chunks_path.exists():
+            try:
+                import json
+                with open(self.chunks_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for chunk in data.get("chunks", []):
+                        self._chunks_store[chunk["id"]] = chunk
+                logger.info(f"Loaded {len(self._chunks_store)} existing chunks")
+            except Exception as e:
+                logger.warning(f"Failed to load chunks: {e}")
+
+    def _save_chunks(self):
+        """Save all chunks to JSON file."""
+        import json
+        self.chunks_path.parent.mkdir(parents=True, exist_ok=True)
+
+        data = {
+            "exported_at": datetime.now().isoformat(),
+            "total_chunks": len(self._chunks_store),
+            "chunks": list(self._chunks_store.values()),
+        }
+
+        with open(self.chunks_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        logger.info(f"Saved {len(self._chunks_store)} chunks to {self.chunks_path}")
 
     def index_document(self, filepath: str) -> IndexingResult:
         """
@@ -208,7 +244,11 @@ class DocumentIndexer:
             )
             indexed_chunks.append(indexed_chunk)
 
-        # Step 5: Register in document registry
+        # Step 5: Store chunks
+        for chunk in indexed_chunks:
+            self._chunks_store[chunk.id] = chunk.to_dict()
+
+        # Step 6: Register in document registry
         chunk_ids = [c.id for c in indexed_chunks]
         self.registry.register_indexed(
             filepath=filepath,
@@ -217,6 +257,9 @@ class DocumentIndexer:
             domain=domain,
             topics=list(all_topics)[:10],
         )
+
+        # Save chunks to disk
+        self._save_chunks()
 
         processing_time = (time.time() - start_time) * 1000
 
@@ -291,15 +334,19 @@ class DocumentIndexer:
 
         return results
 
-    def get_all_chunks(self) -> list[IndexedChunk]:
-        """Get all indexed chunks from all documents."""
-        # This would typically load from a persistent store
-        # For now, return empty - chunks are returned per-document
-        return []
+    def get_all_chunks(self) -> list[dict]:
+        """Get all indexed chunks from the chunk store."""
+        return list(self._chunks_store.values())
+
+    def get_chunk_count(self) -> int:
+        """Get total number of stored chunks."""
+        return len(self._chunks_store)
 
     def get_stats(self) -> dict:
         """Get indexing statistics."""
-        return self.registry.get_stats()
+        stats = self.registry.get_stats()
+        stats["stored_chunks"] = len(self._chunks_store)
+        return stats
 
 
 # Quick test
