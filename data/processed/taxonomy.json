@@ -1,0 +1,572 @@
+{
+  "version": "1.0",
+  "topics": {
+    "car": {
+      "id": "car",
+      "name_en": "Car Insurance",
+      "name_he": "ביטוח רכב",
+      "keywords_he": [
+        "רכב",
+        "מכונית",
+        "נהיגה",
+        "תאונת דרכים",
+        "רישיון"
+      ],
+      "keywords_en": [
+        "car",
+        "vehicle",
+        "auto",
+        "driving"
+      ],
+      "parent_id": null,
+      "children": [
+        "car/mandatory",
+        "car/comprehensive",
+        "car/third_party",
+        "car/claims"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/mandatory": {
+      "id": "car/mandatory",
+      "name_en": "Mandatory Insurance",
+      "name_he": "ביטוח חובה",
+      "keywords_he": [
+        "חובה",
+        "חוק",
+        "פיצויים",
+        "נפגעי תאונות"
+      ],
+      "keywords_en": [],
+      "parent_id": "car",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/comprehensive": {
+      "id": "car/comprehensive",
+      "name_en": "Comprehensive Insurance",
+      "name_he": "ביטוח מקיף",
+      "keywords_he": [
+        "מקיף",
+        "גניבה",
+        "נזק עצמי",
+        "אובדן גמור"
+      ],
+      "keywords_en": [],
+      "parent_id": "car",
+      "children": [
+        "car/comprehensive/coverage",
+        "car/comprehensive/exclusions",
+        "car/comprehensive/deductible"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/comprehensive/coverage": {
+      "id": "car/comprehensive/coverage",
+      "name_en": "Coverage",
+      "name_he": "כיסויים",
+      "keywords_he": [
+        "כיסוי",
+        "מכוסה",
+        "כולל",
+        "פוליסה מכסה"
+      ],
+      "keywords_en": [],
+      "parent_id": "car/comprehensive",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/comprehensive/exclusions": {
+      "id": "car/comprehensive/exclusions",
+      "name_en": "Exclusions",
+      "name_he": "חריגים",
+      "keywords_he": [
+        "חריג",
+        "לא מכוסה",
+        "אינו מכסה",
+        "למעט",
+        "פרט ל"
+      ],
+      "keywords_en": [],
+      "parent_id": "car/comprehensive",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/comprehensive/deductible": {
+      "id": "car/comprehensive/deductible",
+      "name_en": "Deductible",
+      "name_he": "השתתפות עצמית",
+      "keywords_he": [
+        "השתתפות עצמית",
+        "דמי השתתפות"
+      ],
+      "keywords_en": [],
+      "parent_id": "car/comprehensive",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/third_party": {
+      "id": "car/third_party",
+      "name_en": "Third Party",
+      "name_he": "צד ג׳",
+      "keywords_he": [
+        "צד ג",
+        "צד שלישי",
+        "נזק לאחרים"
+      ],
+      "keywords_en": [],
+      "parent_id": "car",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "car/claims": {
+      "id": "car/claims",
+      "name_en": "Claims",
+      "name_he": "תביעות",
+      "keywords_he": [
+        "תביעה",
+        "הגשת תביעה",
+        "פתיחת תיק",
+        "דיווח נזק"
+      ],
+      "keywords_en": [],
+      "parent_id": "car",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment": {
+      "id": "apartment",
+      "name_en": "Apartment Insurance",
+      "name_he": "ביטוח דירה",
+      "keywords_he": [
+        "דירה",
+        "בית",
+        "מגורים",
+        "נכס"
+      ],
+      "keywords_en": [
+        "apartment",
+        "home",
+        "house",
+        "property"
+      ],
+      "parent_id": null,
+      "children": [
+        "apartment/structure",
+        "apartment/contents",
+        "apartment/coverage",
+        "apartment/exclusions",
+        "apartment/claims"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment/structure": {
+      "id": "apartment/structure",
+      "name_en": "Structure",
+      "name_he": "מבנה",
+      "keywords_he": [
+        "מבנה",
+        "קירות",
+        "גג",
+        "יסודות"
+      ],
+      "keywords_en": [],
+      "parent_id": "apartment",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment/contents": {
+      "id": "apartment/contents",
+      "name_en": "Contents",
+      "name_he": "תכולה",
+      "keywords_he": [
+        "תכולה",
+        "רהיטים",
+        "מכשירי חשמל",
+        "ציוד"
+      ],
+      "keywords_en": [],
+      "parent_id": "apartment",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment/coverage": {
+      "id": "apartment/coverage",
+      "name_en": "Coverage",
+      "name_he": "כיסויים",
+      "keywords_he": [
+        "כיסוי",
+        "מכוסה",
+        "כולל"
+      ],
+      "keywords_en": [],
+      "parent_id": "apartment",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment/exclusions": {
+      "id": "apartment/exclusions",
+      "name_en": "Exclusions",
+      "name_he": "חריגים",
+      "keywords_he": [
+        "חריג",
+        "לא מכוסה",
+        "אינו מכסה"
+      ],
+      "keywords_en": [],
+      "parent_id": "apartment",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "apartment/claims": {
+      "id": "apartment/claims",
+      "name_en": "Claims",
+      "name_he": "תביעות",
+      "keywords_he": [
+        "תביעה",
+        "הגשת תביעה",
+        "דיווח נזק"
+      ],
+      "keywords_en": [],
+      "parent_id": "apartment",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "health": {
+      "id": "health",
+      "name_en": "Health Insurance",
+      "name_he": "ביטוח בריאות",
+      "keywords_he": [
+        "בריאות",
+        "רפואי",
+        "רפואה",
+        "חולה",
+        "מחלה"
+      ],
+      "keywords_en": [
+        "health",
+        "medical",
+        "healthcare"
+      ],
+      "parent_id": null,
+      "children": [
+        "health/surgery",
+        "health/medications"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "health/surgery": {
+      "id": "health/surgery",
+      "name_en": "Surgery",
+      "name_he": "ניתוחים",
+      "keywords_he": [
+        "ניתוח",
+        "ניתוחים",
+        "אשפוז",
+        "בית חולים"
+      ],
+      "keywords_en": [],
+      "parent_id": "health",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "health/medications": {
+      "id": "health/medications",
+      "name_en": "Medications",
+      "name_he": "תרופות",
+      "keywords_he": [
+        "תרופה",
+        "תרופות",
+        "מרשם"
+      ],
+      "keywords_en": [],
+      "parent_id": "health",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "travel": {
+      "id": "travel",
+      "name_en": "Travel Insurance",
+      "name_he": "ביטוח נסיעות",
+      "keywords_he": [
+        "נסיעות",
+        "חו\"ל",
+        "טיסה",
+        "נסיעה לחו\"ל"
+      ],
+      "keywords_en": [
+        "travel",
+        "abroad",
+        "flight",
+        "trip"
+      ],
+      "parent_id": null,
+      "children": [
+        "travel/medical",
+        "travel/cancellation",
+        "travel/luggage"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "travel/medical": {
+      "id": "travel/medical",
+      "name_en": "Medical Coverage",
+      "name_he": "כיסוי רפואי",
+      "keywords_he": [
+        "רפואי",
+        "אשפוז בחו\"ל",
+        "טיפול רפואי"
+      ],
+      "keywords_en": [],
+      "parent_id": "travel",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "travel/cancellation": {
+      "id": "travel/cancellation",
+      "name_en": "Trip Cancellation",
+      "name_he": "ביטול נסיעה",
+      "keywords_he": [
+        "ביטול",
+        "ביטול נסיעה",
+        "ביטול טיסה"
+      ],
+      "keywords_en": [],
+      "parent_id": "travel",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "travel/luggage": {
+      "id": "travel/luggage",
+      "name_en": "Luggage",
+      "name_he": "מטען",
+      "keywords_he": [
+        "מטען",
+        "מזוודה",
+        "אובדן מטען",
+        "כבודה"
+      ],
+      "keywords_en": [],
+      "parent_id": "travel",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "business": {
+      "id": "business",
+      "name_en": "Business Insurance",
+      "name_he": "ביטוח עסקים",
+      "keywords_he": [
+        "עסק",
+        "עסקים",
+        "חברה",
+        "מושב",
+        "עובדים"
+      ],
+      "keywords_en": [
+        "business",
+        "company",
+        "commercial"
+      ],
+      "parent_id": null,
+      "children": [
+        "business/liability",
+        "business/property",
+        "business/employees"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "business/liability": {
+      "id": "business/liability",
+      "name_en": "Professional Liability",
+      "name_he": "אחריות מקצועית",
+      "keywords_he": [
+        "אחריות מקצועית",
+        "רשלנות",
+        "נזק ללקוח"
+      ],
+      "keywords_en": [],
+      "parent_id": "business",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "business/property": {
+      "id": "business/property",
+      "name_en": "Business Property",
+      "name_he": "רכוש עסקי",
+      "keywords_he": [
+        "רכוש עסקי",
+        "ציוד",
+        "מלאי",
+        "מבנה עסק"
+      ],
+      "keywords_en": [],
+      "parent_id": "business",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "business/employees": {
+      "id": "business/employees",
+      "name_en": "Employee Insurance",
+      "name_he": "ביטוח עובדים",
+      "keywords_he": [
+        "עובדים",
+        "עובדים זרים",
+        "תאונות עבודה"
+      ],
+      "keywords_en": [],
+      "parent_id": "business",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "life": {
+      "id": "life",
+      "name_en": "Life Insurance",
+      "name_he": "ביטוח חיים",
+      "keywords_he": [
+        "חיים",
+        "ביטוח חיים",
+        "מוות",
+        "נכות"
+      ],
+      "keywords_en": [
+        "life",
+        "death",
+        "disability"
+      ],
+      "parent_id": null,
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "dental": {
+      "id": "dental",
+      "name_en": "Dental Insurance",
+      "name_he": "ביטוח שיניים",
+      "keywords_he": [
+        "שיניים",
+        "רופא שיניים",
+        "טיפול שיניים"
+      ],
+      "keywords_en": [
+        "dental",
+        "teeth",
+        "dentist"
+      ],
+      "parent_id": null,
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "mortgage": {
+      "id": "mortgage",
+      "name_en": "Mortgage Insurance",
+      "name_he": "ביטוח משכנתא",
+      "keywords_he": [
+        "משכנתא",
+        "הלוואה",
+        "בנק"
+      ],
+      "keywords_en": [
+        "mortgage",
+        "loan"
+      ],
+      "parent_id": null,
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "general": {
+      "id": "general",
+      "name_en": "General",
+      "name_he": "כללי",
+      "keywords_he": [
+        "כללי",
+        "מידע",
+        "שירות"
+      ],
+      "keywords_en": [],
+      "parent_id": null,
+      "children": [
+        "general/claims",
+        "general/cancellation",
+        "general/contact"
+      ],
+      "description": null,
+      "chunk_ids": []
+    },
+    "general/claims": {
+      "id": "general/claims",
+      "name_en": "How to File Claims",
+      "name_he": "הגשת תביעות",
+      "keywords_he": [
+        "תביעה",
+        "הגשת תביעה",
+        "איך להגיש",
+        "טופס תביעה"
+      ],
+      "keywords_en": [],
+      "parent_id": "general",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "general/cancellation": {
+      "id": "general/cancellation",
+      "name_en": "Policy Cancellation",
+      "name_he": "ביטול פוליסה",
+      "keywords_he": [
+        "ביטול",
+        "ביטול פוליסה",
+        "סיום ביטוח"
+      ],
+      "keywords_en": [],
+      "parent_id": "general",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    },
+    "general/contact": {
+      "id": "general/contact",
+      "name_en": "Contact Information",
+      "name_he": "פרטי התקשרות",
+      "keywords_he": [
+        "טלפון",
+        "מוקד",
+        "פקס",
+        "מייל",
+        "כתובת",
+        "יצירת קשר"
+      ],
+      "keywords_en": [],
+      "parent_id": "general",
+      "children": [],
+      "description": null,
+      "chunk_ids": []
+    }
+  }
+}

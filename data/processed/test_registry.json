@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "created_at": "2026-02-19T14:52:26.337227",
+  "last_updated": "2026-02-19T14:52:26.351713",
+  "documents": {
+    "4e8a5438c1fd2eca7efa547b49afa17ec0b2f3a5eebdb1f321c8b847440e89dc": {
+      "file_hash": "4e8a5438c1fd2eca7efa547b49afa17ec0b2f3a5eebdb1f321c8b847440e89dc",
+      "filename": "טופס-בקשה-לביטול-פוליסה-ביטוח-לעסק.pdf",
+      "filepath": "/Users/gilr/IdeaProjects/RL-bot/data/harel_pdfs/pdfs/טופס-בקשה-לביטול-פוליסה-ביטוח-לעסק.pdf",
+      "status": "indexed",
+      "indexed_at": "2026-02-19T14:52:26.351655",
+      "file_size": 50054,
+      "page_count": 10,
+      "chunk_count": 5,
+      "chunk_ids": [
+        "chunk_000",
+        "chunk_001",
+        "chunk_002",
+        "chunk_003",
+        "chunk_004"
+      ],
+      "domain": "business",
+      "topics": [
+        "business"
+      ],
+      "schema_version": "1.0",
+      "error_message": null
+    }
+  },
+  "stats": {
+    "total_documents": 1,
+    "total_chunks": 5,
+    "indexed": 1,
+    "pending": 0,
+    "failed": 0
+  }
+}
