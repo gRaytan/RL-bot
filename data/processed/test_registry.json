@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "created_at": "2026-02-19T14:52:26.337227",
-  "last_updated": "2026-02-19T14:52:26.351713",
+  "last_updated": "2026-02-19T22:43:53.255512",
   "documents": {
     "4e8a5438c1fd2eca7efa547b49afa17ec0b2f3a5eebdb1f321c8b847440e89dc": {
       "file_hash": "4e8a5438c1fd2eca7efa547b49afa17ec0b2f3a5eebdb1f321c8b847440e89dc",
@@ -25,12 +25,33 @@
       ],
       "schema_version": "1.0",
       "error_message": null
+    },
+    "cec6a200207e1245d3a356d2eb2f82093ff199fa6feb3ed92910591ae9bae79c": {
+      "file_hash": "cec6a200207e1245d3a356d2eb2f82093ff199fa6feb3ed92910591ae9bae79c",
+      "filename": "טופס-ערעור-ביטוח-רכב.pdf",
+      "filepath": "/Users/gilr/IdeaProjects/RL-bot/data/harel_pdfs/pdfs/טופס-ערעור-ביטוח-רכב.pdf",
+      "status": "indexed",
+      "indexed_at": "2026-02-19T22:43:53.255464",
+      "file_size": 461312,
+      "page_count": 1,
+      "chunk_count": 1,
+      "chunk_ids": [
+        "chunk_000"
+      ],
+      "domain": "car",
+      "topics": [
+        "general/contact",
+        "car",
+        "general"
+      ],
+      "schema_version": "1.0",
+      "error_message": null
     }
   },
   "stats": {
-    "total_documents": 1,
-    "total_chunks": 5,
-    "indexed": 1,
+    "total_documents": 2,
+    "total_chunks": 6,
+    "indexed": 2,
     "pending": 0,
     "failed": 0
   }

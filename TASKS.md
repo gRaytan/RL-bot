@@ -31,9 +31,9 @@
 
 #### 2.1 Document Ingestion Pipeline [IN PROGRESS]
 - [x] Create `src/ingestion/__init__.py`
-- [ ] **Document Registry** - Track indexed files for incremental updates
-- [ ] **Topic Taxonomy** - Define topic hierarchy (8 domains + subtopics)
-- [ ] **PDF Processor** - Extract text with Docling
+- [x] **Document Registry** - Track indexed files for incremental updates
+- [x] **Topic Taxonomy** - Define topic hierarchy (9 domains + subtopics)
+- [x] **PDF Processor** - Extract text with Docling (page-by-page)
 - [ ] **Topic Classifier** - Classify chunks into topics
 - [ ] **Document Indexer** - Orchestrate full pipeline
 - [ ] **Ingestion CLI** - `scripts/ingest_documents.py`

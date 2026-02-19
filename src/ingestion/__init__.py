@@ -11,6 +11,7 @@ Components:
 from .document_registry import DocumentRegistry
 from .topic_taxonomy import TopicTaxonomy, Topic
 from .pdf_processor import PDFProcessor, ProcessedDocument, PageContent
+from .document_indexer import DocumentIndexer, IndexedChunk, IndexingResult
 
 __all__ = [
     "DocumentRegistry",
@@ -19,5 +20,8 @@ __all__ = [
     "PDFProcessor",
     "ProcessedDocument",
     "PageContent",
+    "DocumentIndexer",
+    "IndexedChunk",
+    "IndexingResult",
 ]
 

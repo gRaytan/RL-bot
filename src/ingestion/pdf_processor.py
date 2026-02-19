@@ -162,34 +162,79 @@ class PDFProcessor:
         )
 
     def _process_with_docling(self, path: Path) -> ProcessedDocument:
-        """Process PDF using Docling."""
+        """Process PDF using Docling with page-by-page extraction."""
         logger.info(f"Processing with Docling: {path.name}")
-        
+
         result = self._converter.convert(str(path))
         doc = result.document
-        
-        # Export to markdown for text extraction
-        markdown = doc.export_to_markdown()
-        
-        # For now, treat entire document as one page
-        # TODO: Implement proper page-by-page extraction from Docling
-        pages = [
-            PageContent(
-                page_num=1,
-                text=markdown,
-                char_count=len(markdown),
-                has_tables="| " in markdown,  # Simple table detection
-                has_headers="#" in markdown,
-            )
-        ]
-        
+
+        # Extract text per page by iterating through document items
+        page_texts: dict[int, list[str]] = {}
+        page_has_tables: dict[int, bool] = {}
+        page_headers: dict[int, list[str]] = {}
+
+        for item, level in doc.iterate_items():
+            # Get page number from provenance
+            page_no = 1  # default
+            if hasattr(item, 'prov') and item.prov:
+                prov = item.prov[0] if isinstance(item.prov, list) else item.prov
+                if hasattr(prov, 'page_no'):
+                    page_no = prov.page_no
+
+            # Initialize page data
+            if page_no not in page_texts:
+                page_texts[page_no] = []
+                page_has_tables[page_no] = False
+                page_headers[page_no] = []
+
+            # Extract text from item
+            if hasattr(item, 'text') and item.text:
+                page_texts[page_no].append(item.text)
+
+                # Check for headers (level 1 items with short text)
+                item_type = type(item).__name__
+                if 'Heading' in item_type or 'Title' in item_type:
+                    page_headers[page_no].append(item.text)
+
+            # Check for tables
+            item_type = type(item).__name__
+            if 'Table' in item_type:
+                page_has_tables[page_no] = True
+
+        # Build PageContent objects
+        pages = []
+        all_headers = []
+        total_chars = 0
+        has_any_tables = False
+
+        for page_no in sorted(page_texts.keys()):
+            text = "\n".join(page_texts[page_no])
+            char_count = len(text)
+            total_chars += char_count
+            has_tables = page_has_tables.get(page_no, False)
+            headers = page_headers.get(page_no, [])
+
+            if has_tables:
+                has_any_tables = True
+            all_headers.extend(headers)
+
+            pages.append(PageContent(
+                page_num=page_no,
+                text=text,
+                char_count=char_count,
+                has_tables=has_tables,
+                has_headers=len(headers) > 0,
+                headers=headers,
+            ))
+
         return ProcessedDocument(
             filepath=str(path),
             filename=path.name,
-            page_count=1,
+            page_count=len(pages),
             pages=pages,
-            total_chars=len(markdown),
-            has_tables=any(p.has_tables for p in pages),
+            total_chars=total_chars,
+            has_tables=has_any_tables,
+            detected_headers=all_headers,
             processing_method="docling"
         )
 
