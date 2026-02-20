@@ -12,6 +12,7 @@ from .embedding_service import EmbeddingService, EmbeddingConfig
 from .vector_store import VectorStore, VectorStoreConfig, SearchResult
 from .bm25_index import BM25Index, BM25Config, BM25Result
 from .hybrid_retriever import HybridRetriever, HybridConfig, RetrievalResult
+from .reranker import Reranker, RerankerConfig, RankedResult
 
 __all__ = [
     "EmbeddingService",
@@ -25,5 +26,8 @@ __all__ = [
     "HybridRetriever",
     "HybridConfig",
     "RetrievalResult",
+    "Reranker",
+    "RerankerConfig",
+    "RankedResult",
 ]
 
