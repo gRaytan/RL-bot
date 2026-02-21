@@ -19,6 +19,10 @@ from ..retrieval import (
 )
 from .answer_generator import AnswerGenerator, GeneratorConfig, GeneratedAnswer, Citation
 
+# Lazy import to avoid circular dependency
+VerificationAgent = None
+VerificationConfig = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +44,7 @@ class RAGConfig:
 
     # Feature flags
     use_reranker: bool = True
+    use_verification: bool = True  # Enable verification agent
 
 
 @dataclass
@@ -54,12 +59,18 @@ class RAGResponse:
     retrieval_time_ms: float = 0
     rerank_time_ms: float = 0
     generation_time_ms: float = 0
+    verification_time_ms: float = 0
     total_time_ms: float = 0
 
     # Debug info
     retrieved_count: int = 0
     reranked_count: int = 0
     context_count: int = 0
+
+    # Verification info
+    verification_passed: bool = True
+    hallucination_score: float = 0.0
+    verification_issues: list[str] = field(default_factory=list)
 
 
 class RAGPipeline:
@@ -131,6 +142,13 @@ class RAGPipeline:
         gen_config = self.config.generator_config or GeneratorConfig()
         self.generator = AnswerGenerator(config=gen_config)
 
+        # Verification agent (optional) - lazy import to avoid circular dependency
+        if self.config.use_verification:
+            from ..agents.verification_agent import VerificationAgent as VA, VerificationConfig as VC
+            self.verifier = VA(config=VC())
+        else:
+            self.verifier = None
+
         logger.info("RAG Pipeline initialized")
 
     def query(
@@ -188,6 +206,33 @@ class RAGPipeline:
         )
         generation_time = (time.time() - t0) * 1000
 
+        # Step 4: Verification (optional)
+        verification_time = 0
+        verification_passed = True
+        hallucination_score = 0.0
+        verification_issues = []
+
+        if self.verifier and generated.answer:
+            t0 = time.time()
+            # Build context string for verification
+            context_text = "\n\n".join([
+                r.text for r in context_results[:self.config.final_context_k]
+            ])
+
+            # Quick heuristic check first (no LLM call)
+            if not self.verifier.quick_verify(generated.answer, context_text):
+                logger.warning("Quick verification failed - running full verification")
+                verification_result = self.verifier.verify(
+                    question=question,
+                    answer=generated.answer,
+                    context=context_text,
+                )
+                verification_passed = verification_result.is_valid
+                hallucination_score = verification_result.hallucination_score
+                verification_issues = verification_result.issues
+
+            verification_time = (time.time() - t0) * 1000
+
         total_time = (time.time() - start_time) * 1000
 
         return RAGResponse(
@@ -198,10 +243,14 @@ class RAGPipeline:
             retrieval_time_ms=retrieval_time,
             rerank_time_ms=rerank_time,
             generation_time_ms=generation_time,
+            verification_time_ms=verification_time,
             total_time_ms=total_time,
             retrieved_count=len(candidates),
             reranked_count=len(context_results),
             context_count=generated.context_used,
+            verification_passed=verification_passed,
+            hallucination_score=hallucination_score,
+            verification_issues=verification_issues,
         )
 
     def query_simple(self, question: str, domain_filter: Optional[str] = None) -> str:

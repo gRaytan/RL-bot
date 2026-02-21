@@ -16,11 +16,14 @@ from .models import (
     ErrorResponse,
 )
 from .session_store import session_store
+from .guardrails import validate_input, validate_output, is_insurance_related, get_off_topic_response
 from src.rag import RAGPipeline, RAGConfig
+from src.agents import InsuranceAgent
 
 
-# Global RAG pipeline (lazy loaded)
+# Global singletons (lazy loaded)
 _rag_pipeline: Optional[RAGPipeline] = None
+_agent: Optional[InsuranceAgent] = None
 
 
 def get_rag_pipeline() -> RAGPipeline:
@@ -31,6 +34,16 @@ def get_rag_pipeline() -> RAGPipeline:
         _rag_pipeline = RAGPipeline(RAGConfig())
         print("RAG pipeline ready.")
     return _rag_pipeline
+
+
+def get_agent() -> InsuranceAgent:
+    """Get or create agent singleton."""
+    global _agent
+    if _agent is None:
+        print("Initializing Insurance Agent...")
+        _agent = InsuranceAgent(rag_pipeline=get_rag_pipeline())
+        print("Agent ready.")
+    return _agent
 
 
 def create_app() -> FastAPI:
@@ -82,19 +95,26 @@ def create_app() -> FastAPI:
     async def chat(request: ChatRequest):
         """
         Send a message and get a response.
-        
+
         - Creates new session if session_id not provided
         - Maintains conversation history within session
         - Returns answer with citations from insurance documents
         """
         start_time = time.time()
-        
+
+        # Validate input
+        input_validation = validate_input(request.message)
+        if not input_validation.is_valid:
+            raise HTTPException(status_code=400, detail=input_validation.error_message)
+
+        message = input_validation.sanitized_text
+
         # Get or create session
         session = session_store.get_or_create_session(request.session_id)
-        
+
         # Add user message to history
-        session.add_message("user", request.message)
-        
+        session.add_message("user", message)
+
         try:
             # Get RAG pipeline
             pipeline = get_rag_pipeline()
@@ -104,7 +124,7 @@ def create_app() -> FastAPI:
             
             # Query RAG pipeline
             result = pipeline.query(
-                question=request.message,
+                question=message,
                 conversation_history=history[:-1],  # Exclude current message
             )
 
@@ -120,7 +140,11 @@ def create_app() -> FastAPI:
 
             answer = result.answer or "מצטער, לא הצלחתי למצוא תשובה."
             confidence = result.confidence
-            
+
+            # Validate and sanitize output
+            output_validation = validate_output(answer)
+            answer = output_validation.sanitized_text
+
             # Add assistant response to history
             session.add_message("assistant", answer, [c.dict() for c in citations])
             
@@ -161,7 +185,7 @@ def create_app() -> FastAPI:
         session = session_store.get_session(session_id)
         if not session:
             raise HTTPException(status_code=404, detail="Session not found")
-        
+
         return {
             "session_id": session.session_id,
             "created_at": session.created_at,
@@ -176,7 +200,59 @@ def create_app() -> FastAPI:
                 for m in session.messages
             ]
         }
-    
+
+    @app.post("/agent/chat", tags=["Agent"])
+    async def agent_chat(request: ChatRequest):
+        """
+        Chat with the insurance agent (with tool calling).
+
+        The agent can decide when to search policy documents.
+        """
+        start_time = time.time()
+
+        # Validate input
+        input_validation = validate_input(request.message)
+        if not input_validation.is_valid:
+            raise HTTPException(status_code=400, detail=input_validation.error_message)
+
+        message = input_validation.sanitized_text
+
+        # Get or create session
+        session = session_store.get_or_create_session(request.session_id)
+        session.add_message("user", message)
+
+        try:
+            agent = get_agent()
+            history = session.get_history(max_turns=3)
+
+            result = agent.chat(
+                message=message,
+                conversation_history=history[:-1],
+            )
+
+            answer = result.get("answer", "מצטער, לא הצלחתי לענות.")
+
+            # Validate and sanitize output
+            output_validation = validate_output(answer)
+            answer = output_validation.sanitized_text
+
+            session.add_message("assistant", answer)
+
+            latency_ms = int((time.time() - start_time) * 1000)
+
+            return {
+                "session_id": session.session_id,
+                "answer": answer,
+                "tool_calls": result.get("tool_calls", []),
+                "latency_ms": latency_ms,
+            }
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Agent error: {str(e)}"
+            )
+
     return app
 
 
