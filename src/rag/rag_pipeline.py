@@ -45,6 +45,7 @@ class RAGConfig:
     # Feature flags
     use_reranker: bool = True
     use_verification: bool = True  # Enable verification agent
+    use_auto_domain: bool = True  # Auto-detect domain from question using TOC
 
 
 @dataclass
@@ -66,6 +67,7 @@ class RAGResponse:
     retrieved_count: int = 0
     reranked_count: int = 0
     context_count: int = 0
+    detected_domain: Optional[str] = None  # Auto-detected domain
 
     # Verification info
     verification_passed: bool = True
@@ -149,6 +151,13 @@ class RAGPipeline:
         else:
             self.verifier = None
 
+        # Domain classifier using TOC taxonomy (optional)
+        if self.config.use_auto_domain:
+            from ..ingestion.topic_taxonomy import TopicTaxonomy
+            self.taxonomy = TopicTaxonomy()
+        else:
+            self.taxonomy = None
+
         logger.info("RAG Pipeline initialized")
 
     def query(
@@ -172,6 +181,23 @@ class RAGPipeline:
         """
         start_time = time.time()
         use_rerank = use_reranker if use_reranker is not None else self.config.use_reranker
+
+        # Step 0: Auto domain classification (if enabled and no filter provided)
+        detected_domain = None
+        if domain_filter is None and self.taxonomy and self.config.use_auto_domain:
+            topics = self.taxonomy.classify_text(question)
+            if topics:
+                # Count domain occurrences to find most likely domain
+                domain_counts = {}
+                for topic in topics:
+                    domain = topic.split("/")[0]
+                    domain_counts[domain] = domain_counts.get(domain, 0) + 1
+
+                # Get domain with most topic matches
+                if domain_counts:
+                    detected_domain = max(domain_counts, key=domain_counts.get)
+                    domain_filter = detected_domain
+                    logger.info(f"Auto-detected domain: {detected_domain} (counts: {domain_counts})")
 
         # Step 1: Hybrid retrieval
         t0 = time.time()
@@ -248,6 +274,7 @@ class RAGPipeline:
             retrieved_count=len(candidates),
             reranked_count=len(context_results),
             context_count=generated.context_used,
+            detected_domain=detected_domain,
             verification_passed=verification_passed,
             hallucination_score=hallucination_score,
             verification_issues=verification_issues,
