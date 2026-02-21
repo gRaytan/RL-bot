@@ -155,7 +155,13 @@ def build_toc(chunks_path: str = "data/processed/chunks.json"):
     """Build Table of Contents from indexed chunks."""
     with open(chunks_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    chunks = list(data.get("chunks", {}).values())
+
+    # Handle both dict and list formats
+    chunks_data = data.get("chunks", {})
+    if isinstance(chunks_data, dict):
+        chunks = list(chunks_data.values())
+    else:
+        chunks = chunks_data
 
     if not chunks:
         logger.warning("No chunks to build TOC from")
