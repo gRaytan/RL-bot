@@ -98,15 +98,17 @@ class AnswerGenerator:
         question: str,
         context_results: list,  # RankedResult or RetrievalResult
         max_context_chunks: int = 5,
+        conversation_history: Optional[list[dict]] = None,
     ) -> GeneratedAnswer:
         """
         Generate an answer from retrieved context.
-        
+
         Args:
             question: User's question
             context_results: Retrieved and reranked results
             max_context_chunks: Maximum chunks to include in context
-            
+            conversation_history: Previous conversation turns
+
         Returns:
             GeneratedAnswer with answer text and citations
         """
@@ -132,13 +134,20 @@ class AnswerGenerator:
         
         # Generate answer
         user_message = USER_TEMPLATE.format(context=context_str, question=question)
-        
+
+        # Build messages with conversation history
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+
+        # Add conversation history if provided
+        if conversation_history:
+            for msg in conversation_history[-6:]:  # Last 3 turns max
+                messages.append({"role": msg["role"], "content": msg["content"]})
+
+        messages.append({"role": "user", "content": user_message})
+
         response = self._client.chat.completions.create(
             model=self.config.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
+            messages=messages,
             temperature=self.config.temperature,
             max_tokens=self.config.max_tokens,
         )

@@ -138,6 +138,7 @@ class RAGPipeline:
         question: str,
         domain_filter: Optional[str] = None,
         use_reranker: Optional[bool] = None,
+        conversation_history: Optional[list[dict]] = None,
     ) -> RAGResponse:
         """
         Process a question through the full RAG pipeline.
@@ -146,6 +147,7 @@ class RAGPipeline:
             question: User's question
             domain_filter: Optional domain filter (car, health, etc.)
             use_reranker: Override config.use_reranker
+            conversation_history: List of {"role": "user/assistant", "content": "..."} dicts
 
         Returns:
             RAGResponse with answer and metadata
@@ -182,6 +184,7 @@ class RAGPipeline:
             question=question,
             context_results=context_results,
             max_context_chunks=self.config.final_context_k,
+            conversation_history=conversation_history,
         )
         generation_time = (time.time() - t0) * 1000
 
