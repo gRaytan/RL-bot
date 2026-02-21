@@ -36,6 +36,16 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class StructuredItem:
+    """A structured item extracted from a document."""
+    item_type: str  # "header", "text", "table", "list"
+    text: str
+    page_num: int
+    level: int = 0  # Hierarchy level (0 = top level)
+    section_path: list[str] = field(default_factory=list)  # ["כיסויים", "נזקי רכוש"]
+
+
+@dataclass
 class PageContent:
     """Content extracted from a single page."""
     page_num: int
@@ -44,6 +54,7 @@ class PageContent:
     has_tables: bool = False
     has_headers: bool = False
     headers: list[str] = field(default_factory=list)
+    structured_items: list[StructuredItem] = field(default_factory=list)
 
 
 @dataclass
@@ -56,12 +67,31 @@ class ProcessedDocument:
     total_chars: int
     has_tables: bool = False
     detected_headers: list[str] = field(default_factory=list)
-    processing_method: str = "docling"  # "docling" or "pypdf"
+    processing_method: str = "docling"  # "docling", "pypdf", or "aspx"
     error: Optional[str] = None
+    structured_items: list[StructuredItem] = field(default_factory=list)
+    domain: Optional[str] = None  # Insurance domain (car, health, etc.)
+    metadata: dict = field(default_factory=dict)  # Additional metadata (url, title, etc.)
 
     def get_page_texts(self) -> list[str]:
         """Get list of page texts for chunking."""
         return [p.text for p in self.pages]
+
+    def get_structured_text(self) -> str:
+        """Get text with structure markers preserved."""
+        parts = []
+        for item in self.structured_items:
+            if item.item_type == "header":
+                # Add header with level indicator
+                prefix = "#" * (item.level + 1)
+                parts.append(f"\n{prefix} {item.text}\n")
+            elif item.item_type == "table":
+                parts.append(f"\n[טבלה]\n{item.text}\n")
+            elif item.item_type == "list":
+                parts.append(f"• {item.text}")
+            else:
+                parts.append(item.text)
+        return "\n".join(parts)
 
 
 class PDFProcessor:
@@ -162,16 +192,21 @@ class PDFProcessor:
         )
 
     def _process_with_docling(self, path: Path) -> ProcessedDocument:
-        """Process PDF using Docling with page-by-page extraction."""
+        """Process PDF using Docling with structure-aware extraction."""
         logger.info(f"Processing with Docling: {path.name}")
 
         result = self._converter.convert(str(path))
         doc = result.document
 
-        # Extract text per page by iterating through document items
+        # Extract structured items per page
         page_texts: dict[int, list[str]] = {}
         page_has_tables: dict[int, bool] = {}
         page_headers: dict[int, list[str]] = {}
+        page_structured_items: dict[int, list[StructuredItem]] = {}
+        all_structured_items: list[StructuredItem] = []
+
+        # Track current section hierarchy
+        current_section_path: list[str] = []
 
         for item, level in doc.iterate_items():
             # Get page number from provenance
@@ -186,20 +221,90 @@ class PDFProcessor:
                 page_texts[page_no] = []
                 page_has_tables[page_no] = False
                 page_headers[page_no] = []
+                page_structured_items[page_no] = []
 
-            # Extract text from item
-            if hasattr(item, 'text') and item.text:
-                page_texts[page_no].append(item.text)
-
-                # Check for headers (level 1 items with short text)
-                item_type = type(item).__name__
-                if 'Heading' in item_type or 'Title' in item_type:
-                    page_headers[page_no].append(item.text)
-
-            # Check for tables
             item_type = type(item).__name__
-            if 'Table' in item_type:
+
+            # Handle different item types
+            if 'SectionHeader' in item_type or 'Heading' in item_type or 'Title' in item_type:
+                # Section header - update hierarchy
+                text = item.text if hasattr(item, 'text') and item.text else ""
+                if text:
+                    # Adjust section path based on level
+                    if level < len(current_section_path):
+                        current_section_path = current_section_path[:level]
+                    current_section_path.append(text)
+
+                    page_texts[page_no].append(f"\n## {text}\n")
+                    page_headers[page_no].append(text)
+
+                    structured_item = StructuredItem(
+                        item_type="header",
+                        text=text,
+                        page_num=page_no,
+                        level=level,
+                        section_path=current_section_path.copy(),
+                    )
+                    page_structured_items[page_no].append(structured_item)
+                    all_structured_items.append(structured_item)
+
+            elif 'Table' in item_type:
+                # Table - export as markdown
                 page_has_tables[page_no] = True
+                table_text = ""
+                if hasattr(item, 'export_to_markdown'):
+                    try:
+                        table_text = item.export_to_markdown()
+                    except Exception:
+                        table_text = "[טבלה]"
+                elif hasattr(item, 'text') and item.text:
+                    table_text = item.text
+                else:
+                    table_text = "[טבלה]"
+
+                page_texts[page_no].append(f"\n{table_text}\n")
+
+                structured_item = StructuredItem(
+                    item_type="table",
+                    text=table_text,
+                    page_num=page_no,
+                    level=level,
+                    section_path=current_section_path.copy(),
+                )
+                page_structured_items[page_no].append(structured_item)
+                all_structured_items.append(structured_item)
+
+            elif 'List' in item_type:
+                # List item - preserve bullet structure
+                text = item.text if hasattr(item, 'text') and item.text else ""
+                if text:
+                    page_texts[page_no].append(f"• {text}")
+
+                    structured_item = StructuredItem(
+                        item_type="list",
+                        text=text,
+                        page_num=page_no,
+                        level=level,
+                        section_path=current_section_path.copy(),
+                    )
+                    page_structured_items[page_no].append(structured_item)
+                    all_structured_items.append(structured_item)
+
+            else:
+                # Regular text
+                text = item.text if hasattr(item, 'text') and item.text else ""
+                if text:
+                    page_texts[page_no].append(text)
+
+                    structured_item = StructuredItem(
+                        item_type="text",
+                        text=text,
+                        page_num=page_no,
+                        level=level,
+                        section_path=current_section_path.copy(),
+                    )
+                    page_structured_items[page_no].append(structured_item)
+                    all_structured_items.append(structured_item)
 
         # Build PageContent objects
         pages = []
@@ -213,6 +318,7 @@ class PDFProcessor:
             total_chars += char_count
             has_tables = page_has_tables.get(page_no, False)
             headers = page_headers.get(page_no, [])
+            structured_items = page_structured_items.get(page_no, [])
 
             if has_tables:
                 has_any_tables = True
@@ -225,6 +331,7 @@ class PDFProcessor:
                 has_tables=has_tables,
                 has_headers=len(headers) > 0,
                 headers=headers,
+                structured_items=structured_items,
             ))
 
         return ProcessedDocument(
@@ -235,7 +342,8 @@ class PDFProcessor:
             total_chars=total_chars,
             has_tables=has_any_tables,
             detected_headers=all_headers,
-            processing_method="docling"
+            processing_method="docling",
+            structured_items=all_structured_items,
         )
 
     def _process_with_pypdf(self, path: Path) -> ProcessedDocument:

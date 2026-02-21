@@ -1,0 +1,79 @@
+{
+  "domain": "dental",
+  "page_count": 12,
+  "scraped_at": "2026-02-21T15:49:33.020233",
+  "pages": [
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental",
+      "title": "ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 23590,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/information/faq",
+      "title": "שאלות נפוצות - ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 35917,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental#header",
+      "title": "ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 23590,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/claim/dental-insurance",
+      "title": "תביעות ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 30621,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental#footer",
+      "title": "ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 23590,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/information/faq#footer",
+      "title": "שאלות נפוצות - ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 35917,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/requests/cancellation",
+      "title": "בקשה לביטול פוליסת ביטוח שיניים פרטית | הראל ביטוח ופיננסים",
+      "text_length": 27350,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/information/faq#header",
+      "title": "שאלות נפוצות - ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 35917,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/",
+      "title": "ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 23590,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/claim/dental-insurance#footer",
+      "title": "תביעות ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 30621,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/claim",
+      "title": "תביעות - ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 20396,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/dental/claim/dental-insurance#header",
+      "title": "תביעות ביטוח שיניים | הראל ביטוח ופיננסים",
+      "text_length": 30621,
+      "table_count": 0
+    }
+  ]
+}

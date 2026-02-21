@@ -9,10 +9,13 @@ Enables incremental indexing:
 
 import hashlib
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass, field, asdict
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -94,6 +97,19 @@ class DocumentRegistry:
             "pending": sum(1 for d in docs.values() if d.get("status") == "pending"),
             "failed": sum(1 for d in docs.values() if d.get("status") == "failed"),
         }
+
+    def clear(self):
+        """Clear all documents from the registry."""
+        self._registry["documents"] = {}
+        self._registry["stats"] = {
+            "total_documents": 0,
+            "total_chunks": 0,
+            "indexed": 0,
+            "pending": 0,
+            "failed": 0,
+        }
+        self._save_registry()
+        logger.info("Registry cleared")
 
     @staticmethod
     def compute_file_hash(filepath: str) -> str:

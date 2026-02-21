@@ -1,0 +1,187 @@
+{
+  "domain": "business",
+  "page_count": 30,
+  "scraped_at": "2026-02-21T15:49:33.036433",
+  "pages": [
+    {
+      "url": "https://www.harel-group.co.il/insurance/business",
+      "title": "ביטוח לעסק | הראל ביטוח ופיננסים",
+      "text_length": 40537,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business#footer",
+      "title": "ביטוח לעסק | הראל ביטוח ופיננסים",
+      "text_length": 40537,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/internet-liability",
+      "title": "ביטוח אחריות אינטרנט | הראל ביטוח ופיננסים",
+      "text_length": 23393,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business#header",
+      "title": "ביטוח לעסק | הראל ביטוח ופיננסים",
+      "text_length": 40537,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/vessels",
+      "title": "ביטוח כלי שיט מסחריים | הראל ביטוח ופיננסים",
+      "text_length": 23262,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/tech",
+      "title": "ביטוח חבות משולב לחברות תוכנה וחומרה | הראל ביטוח ופיננסים",
+      "text_length": 23638,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/upgrade-office",
+      "title": "ביטוח מכלול למשרד | הראל ביטוח ופיננסים",
+      "text_length": 25651,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/cyber",
+      "title": "ביטוח סיכוני סייבר | הראל ביטוח ופיננסים",
+      "text_length": 22575,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/agricultural-crops",
+      "title": "מכלול לחבר מושב ומכלול למושב | הראל ביטוח ופיננסים",
+      "text_length": 24427,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/clinical-trials",
+      "title": "ביטוח ניסויים קליניים | הראל ביטוח ופיננסים",
+      "text_length": 23422,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/information/insurance-for-small-businesses",
+      "title": "עסקים קטנים עם ביטוחים גדולים | הראל ביטוח ופיננסים",
+      "text_length": 26405,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/property-in-transit",
+      "title": "ביטוח רכוש במעבר | הראל ביטוח ופיננסים",
+      "text_length": 23721,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/third-party",
+      "title": "ביטוח חבות כלפי צד שלישי | הראל ביטוח ופיננסים",
+      "text_length": 23540,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/complex-business",
+      "title": "מכלול לעסק | הראל ביטוח ופיננסים",
+      "text_length": 25852,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/dentists",
+      "title": "ביטוח אחריות מקצועית לרופאי שיניים | הראל ביטוח ופיננסים",
+      "text_length": 25330,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/money",
+      "title": "ביטוח כספים | הראל ביטוח ופיננסים",
+      "text_length": 23372,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/investment-advisors",
+      "title": "ביטוח אחריות מקצועית ליועצי השקעות | הראל ביטוח ופיננסים",
+      "text_length": 25643,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/private-doctors",
+      "title": "ביטוח אחריות מקצועית לרופאים פרטיים | הראל ביטוח ופיננסים",
+      "text_length": 25350,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/directors-liability",
+      "title": "ביטוח אחריות דירקטורים ונושאי משרה | הראל ביטוח ופיננסים",
+      "text_length": 24662,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/information/insurance-solutions-for-business-owners",
+      "title": "פתרונות ביטוחיים לבעלי ובעלות עסקים | הראל ביטוח ופיננסים",
+      "text_length": 26528,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/mechanical-failure",
+      "title": "ביטוח שבר מכני | הראל ביטוח ופיננסים",
+      "text_length": 23985,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/garage",
+      "title": "ביטוח אחריות בעל מוסך כלפי צד ג' | הראל ביטוח ופיננסים",
+      "text_length": 24030,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/professional-liability",
+      "title": "ביטוח אחריות מקצועית | הראל ביטוח ופיננסים",
+      "text_length": 24896,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/pollution",
+      "title": "ביטוח זיהום | הראל ביטוח ופיננסים",
+      "text_length": 23483,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/contract-works",
+      "title": "ביטוח עבודות קבלניות | הראל ביטוח ופיננסים",
+      "text_length": 25664,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/safe-deposit-box",
+      "title": "ביטוח רכוש בכספת | הראל ביטוח ופיננסים",
+      "text_length": 24344,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/loss-of-license",
+      "title": "ביטוח אובדן רישיון לרופאים | הראל ביטוח ופיננסים",
+      "text_length": 23941,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/fire-and-risk",
+      "title": "ביטוח אש מורחב ואובדן תוצאתי | הראל ביטוח ופיננסים",
+      "text_length": 25058,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/cargo",
+      "title": "ביטוח מטענים וסחורות | הראל ביטוח ופיננסים",
+      "text_length": 24388,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/business/policies/media-liability",
+      "title": "ביטוח אחריות מדיה | הראל ביטוח ופיננסים",
+      "text_length": 23146,
+      "table_count": 0
+    }
+  ]
+}

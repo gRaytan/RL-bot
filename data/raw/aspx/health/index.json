@@ -1,0 +1,187 @@
+{
+  "domain": "health",
+  "page_count": 30,
+  "scraped_at": "2026-02-21T15:49:32.995712",
+  "pages": [
+    {
+      "url": "https://www.harel-group.co.il/insurance/health",
+      "title": "ביטוח בריאות פרטי בהתאמה אישית | הראל ביטוח ופיננסים",
+      "text_length": 51579,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/doctor-at-home",
+      "title": "ביקור רופא עד הבית | הראל ביטוח ופיננסים",
+      "text_length": 24806,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/child-development",
+      "title": "טיפולים ואבחונים לילד | הראל ביטוח ופיננסים",
+      "text_length": 24957,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/ambulatory-care",
+      "title": "ייעוץ ובדיקות (בסיסי או מורחב) | הראל ביטוח ופיננסים",
+      "text_length": 26078,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/speech-language-therapy",
+      "title": "כשהמילים לא מספיקות - קלינאות תקשורת לילדים | הראל ביטוח ופיננסים",
+      "text_length": 28878,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/claim/private-surgery",
+      "title": "כיסוי הוצאות עבור ניתוח בבית חולים פרטי | הראל ביטוח ופיננסים",
+      "text_length": 31209,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/organ-transplant-overseas",
+      "title": "המסע להשתלות איברים בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 27353,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health#footer",
+      "title": "ביטוח בריאות פרטי בהתאמה אישית | הראל ביטוח ופיננסים",
+      "text_length": 51579,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/what-is-an-oxygen-chamber",
+      "title": "אין לחץ - מהו תא לחץ ובמה הטיפול עוזר? | הראל ביטוח ופיננסים",
+      "text_length": 28211,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/premium-care",
+      "title": "טיפולים בטכנולוגיות מתקדמות ואביזרים רפואיים | הראל ביטוח ופיננסים",
+      "text_length": 25732,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health#header",
+      "title": "ביטוח בריאות פרטי בהתאמה אישית | הראל ביטוח ופיננסים",
+      "text_length": 51579,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/medications",
+      "title": "תרופות מחוץ לסל הבריאות | הראל ביטוח ופיננסים",
+      "text_length": 23878,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/personal-doctor",
+      "title": "ליווי רפואי וטיפולים אגב אירוע רפואי משמעותי, כגון ניתוח, אשפוז או מחלה קשה | הראל ביטוח ופיננסים",
+      "text_length": 25877,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/surgery-abroad",
+      "title": "ניתוחים וטיפולים מחליפי ניתוח בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 24822,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/upgrade-extra",
+      "title": "ניתוחים וטיפולים מחליפי ניתוח בישראל משלים שב\"ן - עם השתתפות עצמית של 5,000 ₪ | הראל ביטוח ופיננסים",
+      "text_length": 25233,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/faq",
+      "title": "שאלות נפוצות - ביטוח בריאות | הראל ביטוח ופיננסים",
+      "text_length": 43716,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/therapeutic-horse-riding",
+      "title": "איך ביטוח הבריאות הפרטי יכול לעזור במימון רכיבה טיפולית לילד | הראל ביטוח ופיננסים",
+      "text_length": 28284,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/claim/public-surgery",
+      "title": "תביעה עקב ניתוח בבית חולים ציבורי | הראל ביטוח ופיננסים",
+      "text_length": 30243,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/claim/surgery-abroad",
+      "title": "כיסוי הוצאות עבור ניתוח בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 30239,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/occupational-therapy-health-insurance",
+      "title": "לא סתם משחקים – ריפוי בעיסוק לילדים | הראל ביטוח ופיננסים",
+      "text_length": 28668,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/private-health-insurance-reform",
+      "title": "איך נראים ביטוחי הבריאות החדשים לאחר הרפורמה בביטוחי הבריאות? | הראל ביטוח ופיננסים",
+      "text_length": 24116,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/online-plus",
+      "title": "רפואה אישית Online+ | הראל ביטוח ופיננסים",
+      "text_length": 26221,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/upgrade-surgeries",
+      "title": "ניתוחים Upgrade - כיסוי משלים שב\"ן לניתוחים ולטיפולים מחליפי ניתוח בישראל - ללא השתתפות עצמית | הראל ביטוח ופיננסים",
+      "text_length": 26023,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/complementary",
+      "title": "שירותי רפואה משלימה | הראל ביטוח ופיננסים",
+      "text_length": 24565,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/transplants-and-treatments",
+      "title": "השתלות וטיפולים מי​וחדים מחוץ לישראל | הראל ביטוח ופיננסים",
+      "text_length": 23859,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/private",
+      "title": "אבחון רפואי מהיר | הראל ביטוח ופיננסים",
+      "text_length": 24163,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/information/alternative-medicine-in-health-insurance",
+      "title": "רפואה משלימה - משלימים את החסר | הראל ביטוח ופיננסים",
+      "text_length": 28813,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/mehashekel-harishon",
+      "title": "ניתוחים וטיפולים מחליפי ניתוח בישראל – מהשקל הראשון | הראל ביטוח ופיננסים",
+      "text_length": 25426,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/doctor-at-home#footer",
+      "title": "ביקור רופא עד הבית | הראל ביטוח ופיננסים",
+      "text_length": 24806,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/health/policies/doctor-at-home#header",
+      "title": "ביקור רופא עד הבית | הראל ביטוח ופיננסים",
+      "text_length": 24806,
+      "table_count": 0
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "domain": "long-term-care",
+  "page_count": 13,
+  "scraped_at": "2026-02-21T15:49:33.075029",
+  "pages": [
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care",
+      "title": "ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 26187,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/faq",
+      "title": "שאלות נפוצות - ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 54905,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care#footer",
+      "title": "ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 26187,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/what-is-long-term-care",
+      "title": "מהו ביטוח סיעודי ולמה הוא חשוב? | הראל ביטוח ופיננסים",
+      "text_length": 26431,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/basic-terms",
+      "title": "מושגי יסוד בביטוחי הסיעוד | הראל ביטוח ופיננסים",
+      "text_length": 25933,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care#header",
+      "title": "ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 26187,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information",
+      "title": "מה כדאי לדעת על ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 26805,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/faq#header",
+      "title": "שאלות נפוצות - ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 54905,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/faq#footer",
+      "title": "שאלות נפוצות - ביטוח סיעודי | הראל ביטוח ופיננסים",
+      "text_length": 54905,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/what-is-long-term-care#header",
+      "title": "מהו ביטוח סיעודי ולמה הוא חשוב? | הראל ביטוח ופיננסים",
+      "text_length": 26431,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/what-is-long-term-care#footer",
+      "title": "מהו ביטוח סיעודי ולמה הוא חשוב? | הראל ביטוח ופיננסים",
+      "text_length": 26431,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/basic-terms#header",
+      "title": "מושגי יסוד בביטוחי הסיעוד | הראל ביטוח ופיננסים",
+      "text_length": 25933,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/long-term-care/information/basic-terms#footer",
+      "title": "מושגי יסוד בביטוחי הסיעוד | הראל ביטוח ופיננסים",
+      "text_length": 25933,
+      "table_count": 0
+    }
+  ]
+}

@@ -35,23 +35,28 @@ class IndexedChunk:
     id: str
     text: str  # Full text with context
     raw_text: str  # Original text without context
-    
+
     # Source metadata
     source_file: str
     source_filename: str
     page_num: int
     chunk_index: int
-    
+
     # Topic metadata
     domain: Optional[str] = None
     topics: list[str] = field(default_factory=list)
-    
+
+    # Structure metadata
+    section_path: list[str] = field(default_factory=list)  # ["כיסויים", "נזקי רכוש"]
+    content_type: str = "text"  # "text", "header", "table", "list"
+    has_table: bool = False
+
     # Processing metadata
     char_count: int = 0
     chunk_size_used: int = 0
     has_context: bool = False
     previous_summary: str = ""
-    
+
     # Timestamps
     indexed_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
@@ -67,6 +72,9 @@ class IndexedChunk:
             "chunk_index": self.chunk_index,
             "domain": self.domain,
             "topics": self.topics,
+            "section_path": self.section_path,
+            "content_type": self.content_type,
+            "has_table": self.has_table,
             "char_count": self.char_count,
             "chunk_size_used": self.chunk_size_used,
             "has_context": self.has_context,
@@ -163,6 +171,177 @@ class DocumentIndexer:
 
         logger.info(f"Saved {len(self._chunks_store)} chunks to {self.chunks_path}")
 
+    def _build_section_map(self, doc: ProcessedDocument) -> dict[int, list[str]]:
+        """
+        Build a map of page numbers to section paths.
+
+        Uses the structured items from the document to track
+        which section each page belongs to.
+
+        Args:
+            doc: Processed document with structured items
+
+        Returns:
+            Dict mapping page_num -> section_path (list of section headers)
+        """
+        section_map: dict[int, list[str]] = {}
+        current_section_path: list[str] = []
+
+        for item in doc.structured_items:
+            if item.item_type == "header":
+                # Update section path based on header level
+                if item.level < len(current_section_path):
+                    current_section_path = current_section_path[:item.level]
+                current_section_path.append(item.text)
+
+            # Store the current section path for this page
+            if item.page_num not in section_map:
+                section_map[item.page_num] = current_section_path.copy()
+
+        return section_map
+
+    def index_processed_document(self, doc: ProcessedDocument) -> IndexingResult:
+        """
+        Index a pre-processed document (PDF or ASPX).
+
+        Args:
+            doc: ProcessedDocument from PDFProcessor or ASPXProcessor
+
+        Returns:
+            IndexingResult with chunks and metadata
+        """
+        import time
+        start_time = time.time()
+
+        filepath = doc.filepath
+        path = Path(filepath)
+
+        # Check if already indexed and up-to-date
+        if self.registry.is_indexed(filepath) and not self.registry.needs_update(filepath):
+            logger.info(f"Skipping {path.name} - already indexed")
+            return IndexingResult(
+                filepath=filepath,
+                filename=path.name,
+                success=True,
+                error="Already indexed (skipped)",
+            )
+
+        if doc.error:
+            self.registry.register_failed(filepath, doc.error)
+            return IndexingResult(
+                filepath=filepath,
+                filename=path.name,
+                success=False,
+                error=doc.error,
+            )
+
+        # Use domain from document or infer from filepath
+        domain = doc.domain or self.taxonomy.get_domain_from_filepath(filepath)
+
+        # Build section map from structured items
+        section_map = self._build_section_map(doc)
+
+        # Chunk the document
+        page_texts = doc.get_page_texts()
+        doc_metadata = {
+            "source_file": filepath,
+            "source_filename": path.name,
+            "domain": domain,
+            "source_type": doc.metadata.get("source_type", "pdf"),
+            "url": doc.metadata.get("url", ""),
+        }
+
+        raw_chunks = self.chunker.chunk_document(
+            pages=page_texts,
+            doc_metadata=doc_metadata,
+            carry_context_across_pages=True,
+        )
+
+        # Create IndexedChunks with topic classification and structure
+        indexed_chunks = []
+        all_topics = set()
+
+        for chunk in raw_chunks:
+            chunk_id = f"{path.stem}_{uuid.uuid4().hex[:8]}"
+
+            # Classify chunk text into topics
+            chunk_topics = self.taxonomy.classify_text(chunk.get("raw_text", ""))
+            all_topics.update(chunk_topics)
+
+            # Get section path for this chunk
+            page_num = chunk["metadata"]["page"]
+            section_path = section_map.get(page_num, [])
+
+            # Detect content type from chunk text
+            raw_text = chunk.get("raw_text", chunk["text"])
+            content_type = "text"
+            has_table = False
+            if raw_text.strip().startswith("|") or "[טבלה]" in raw_text:
+                content_type = "table"
+                has_table = True
+            elif raw_text.strip().startswith("•") or raw_text.strip().startswith("-"):
+                content_type = "list"
+            elif raw_text.strip().startswith("##"):
+                content_type = "header"
+
+            indexed_chunk = IndexedChunk(
+                id=chunk_id,
+                text=chunk["text"],
+                raw_text=chunk.get("raw_text", chunk["text"]),
+                source_file=filepath,
+                source_filename=path.name,
+                page_num=page_num,
+                chunk_index=chunk["metadata"]["chunk_index"],
+                domain=domain,
+                topics=chunk_topics[:5],
+                section_path=section_path,
+                content_type=content_type,
+                has_table=has_table,
+                char_count=chunk["metadata"]["char_count"],
+                chunk_size_used=chunk["metadata"]["chunk_size_used"],
+                has_context=chunk["metadata"]["has_context"],
+                previous_summary=chunk.get("previous_summary", ""),
+            )
+            indexed_chunks.append(indexed_chunk)
+
+        # Store chunks
+        for chunk in indexed_chunks:
+            self._chunks_store[chunk.id] = chunk.to_dict()
+
+        # Register in document registry
+        chunk_ids = [c.id for c in indexed_chunks]
+        self.registry.register_indexed(
+            filepath=filepath,
+            chunk_ids=chunk_ids,
+            page_count=doc.page_count,
+            domain=domain,
+            topics=list(all_topics)[:10],
+        )
+
+        # Save chunks to disk
+        self._save_chunks()
+
+        processing_time = (time.time() - start_time) * 1000
+
+        logger.info(
+            f"Indexed {path.name}: {doc.page_count} pages, "
+            f"{len(indexed_chunks)} chunks, {doc.total_chars} chars, "
+            f"{processing_time:.0f}ms"
+        )
+
+        return IndexingResult(
+            filepath=filepath,
+            filename=path.name,
+            success=True,
+            chunks=indexed_chunks,
+            page_count=doc.page_count,
+            chunk_count=len(indexed_chunks),
+            total_chars=doc.total_chars,
+            domain=domain,
+            topics=list(all_topics)[:10],
+            processing_time_ms=processing_time,
+        )
+
     def index_document(self, filepath: str) -> IndexingResult:
         """
         Index a single document through the full pipeline.
@@ -201,8 +380,12 @@ class DocumentIndexer:
         
         # Step 2: Infer domain from filename
         domain = self.taxonomy.get_domain_from_filepath(filepath)
-        
-        # Step 3: Chunk the document
+
+        # Step 3: Build section map from structured items
+        # Maps (page_num, char_offset) -> section_path
+        section_map = self._build_section_map(doc)
+
+        # Step 4: Chunk the document
         page_texts = doc.get_page_texts()
         doc_metadata = {
             "source_file": filepath,
@@ -216,7 +399,7 @@ class DocumentIndexer:
             carry_context_across_pages=True,
         )
 
-        # Step 4: Create IndexedChunks with topic classification
+        # Step 5: Create IndexedChunks with topic classification and structure
         indexed_chunks = []
         all_topics = set()
 
@@ -227,16 +410,35 @@ class DocumentIndexer:
             chunk_topics = self.taxonomy.classify_text(chunk.get("raw_text", ""))
             all_topics.update(chunk_topics)
 
+            # Get section path for this chunk
+            page_num = chunk["metadata"]["page"]
+            section_path = section_map.get(page_num, [])
+
+            # Detect content type from chunk text
+            raw_text = chunk.get("raw_text", chunk["text"])
+            content_type = "text"
+            has_table = False
+            if raw_text.strip().startswith("|") or "[טבלה]" in raw_text:
+                content_type = "table"
+                has_table = True
+            elif raw_text.strip().startswith("•") or raw_text.strip().startswith("-"):
+                content_type = "list"
+            elif raw_text.strip().startswith("##"):
+                content_type = "header"
+
             indexed_chunk = IndexedChunk(
                 id=chunk_id,
                 text=chunk["text"],
                 raw_text=chunk.get("raw_text", chunk["text"]),
                 source_file=filepath,
                 source_filename=path.name,
-                page_num=chunk["metadata"]["page"],
+                page_num=page_num,
                 chunk_index=chunk["metadata"]["chunk_index"],
                 domain=domain,
                 topics=chunk_topics[:5],  # Top 5 topics
+                section_path=section_path,
+                content_type=content_type,
+                has_table=has_table,
                 char_count=chunk["metadata"]["char_count"],
                 chunk_size_used=chunk["metadata"]["chunk_size_used"],
                 has_context=chunk["metadata"]["has_context"],

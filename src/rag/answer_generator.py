@@ -112,24 +112,34 @@ class AnswerGenerator:
         Returns:
             GeneratedAnswer with answer text and citations
         """
-        # Build context string
+        # Build context string with structure information
         context_chunks = context_results[:max_context_chunks]
         context_parts = []
         citations = []
-        
+
         for i, result in enumerate(context_chunks, 1):
             source_file = result.metadata.get("source_filename", "unknown")
             page_num = result.metadata.get("page_num")
-            
-            context_parts.append(f"[מקור {i}: {source_file}, עמוד {page_num}]\n{result.text}")
-            
+            section_path = result.metadata.get("section_path", [])
+            content_type = result.metadata.get("content_type", "text")
+
+            # Build header with source and section info
+            header = f"[מקור {i}: {source_file}, עמוד {page_num}]"
+            if section_path:
+                section_str = " > ".join(section_path) if isinstance(section_path, list) else section_path
+                header += f"\n[סעיף: {section_str}]"
+            if content_type == "table":
+                header += "\n[טבלה]"
+
+            context_parts.append(f"{header}\n{result.text}")
+
             citations.append(Citation(
                 source_file=source_file,
                 page_num=page_num,
                 chunk_id=result.id,
                 text_snippet=result.text[:100] + "...",
             ))
-        
+
         context_str = "\n\n---\n\n".join(context_parts)
         
         # Generate answer

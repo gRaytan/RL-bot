@@ -1,0 +1,187 @@
+{
+  "domain": "travel",
+  "page_count": 30,
+  "scraped_at": "2026-02-21T15:49:32.976131",
+  "pages": [
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel",
+      "title": "ביטוח נסיעות לחו\"ל לרכישה אונליין תוך דקות - הראל | הראל ביטוח ופיננסים",
+      "text_length": 43771,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/policies/premium-passport",
+      "title": "ביטוח נסיעות לחו\"ל - דרכון פרימיום | הראל ביטוח ופיננסים",
+      "text_length": 24812,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/safe-trip-travel",
+      "title": "מטיילים בטוח: טיפים לטיול בטיחותי | הראל ביטוח ופיננסים",
+      "text_length": 30073,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/download-app/",
+      "title": "אפליקציית הראל חו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 24128,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/esim",
+      "title": "eSIM חבילות גלישה בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 28596,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/traveling-with-harel-abroad-app",
+      "title": "לא נוסעים לחו\"ל בלי אפליקציית הראל חו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 26651,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/weather",
+      "title": "והרי התחזית: טיול בטוח מתחיל בבדיקת תנאי מזג האוויר | הראל ביטוח ופיננסים",
+      "text_length": 29989,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/policies/first-class",
+      "title": "ביטוח נסיעות לחו\"ל -דרכון First Class | הראל ביטוח ופיננסים",
+      "text_length": 26196,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/london",
+      "title": "לונדון כן מחכה לי | הראל ביטוח ופיננסים",
+      "text_length": 23557,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/ski-vacation",
+      "title": "מתגלגלים בשלג – חופשת סקי מתחילה בביטחון | הראל ביטוח ופיננסים",
+      "text_length": 26973,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel#header",
+      "title": "ביטוח נסיעות לחו\"ל לרכישה אונליין תוך דקות - הראל | הראל ביטוח ופיננסים",
+      "text_length": 43771,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/security-updates",
+      "title": "עדכונים שוטפים בעקבות המצב הבטחוני | הראל ביטוח ופיננסים",
+      "text_length": 20309,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/faq",
+      "title": "שאלות נפוצות - ביטוח נסיעות לחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 58931,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/why-harel-travel-insurane",
+      "title": "למה לבחור בביטוח הנסיעות לחו\"ל של הראל? | הראל ביטוח ופיננסים",
+      "text_length": 27281,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel#footer",
+      "title": "ביטוח נסיעות לחו\"ל לרכישה אונליין תוך דקות - הראל | הראל ביטוח ופיננסים",
+      "text_length": 43771,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/suitcase",
+      "title": "מתיישבים על המזוודה? טיפים מנצחים לאריזה חכמה | הראל ביטוח ופיננסים",
+      "text_length": 26077,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/policies/premium-passport#footer",
+      "title": "ביטוח נסיעות לחו\"ל - דרכון פרימיום | הראל ביטוח ופיננסים",
+      "text_length": 24812,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/policies/premium-passport#header",
+      "title": "ביטוח נסיעות לחו\"ל - דרכון פרימיום | הראל ביטוח ופיננסים",
+      "text_length": 24812,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/policies",
+      "title": "המוצרים שלנו - ביטוח נסיעות לחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 21996,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/safe-trip-travel#footer",
+      "title": "מטיילים בטוח: טיפים לטיול בטיחותי | הראל ביטוח ופיננסים",
+      "text_length": 30073,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/rescue-team-insurance",
+      "title": "הכירו: הראל 669, צוות הראל חילוץ והצלה | הראל ביטוח ופיננסים",
+      "text_length": 26308,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/safe-trip-travel#header",
+      "title": "מטיילים בטוח: טיפים לטיול בטיחותי | הראל ביטוח ופיננסים",
+      "text_length": 30073,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/emergency-trip-travel",
+      "title": "איך להתנהל בשעת חירום במהלך הטיול? | הראל ביטוח ופיננסים",
+      "text_length": 30208,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information/altitude-sickness",
+      "title": "טיול בטיחותי, גם בגובה: כל מה שצריך לדעת על מחלת גבהים | הראל ביטוח ופיננסים",
+      "text_length": 30084,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/information",
+      "title": "מה כדאי לדעת ביטוח נסיעות לחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 55291,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/download-app/#header",
+      "title": "אפליקציית הראל חו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 24128,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits",
+      "title": "אקסטרה הטבות | הראל ביטוח ופיננסים",
+      "text_length": 25116,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/download-app/#footer",
+      "title": "אפליקציית הראל חו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 24128,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/esim#footer",
+      "title": "eSIM חבילות גלישה בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 28596,
+      "table_count": 0
+    },
+    {
+      "url": "https://www.harel-group.co.il/insurance/travel/benefits/esim#header",
+      "title": "eSIM חבילות גלישה בחו\"ל | הראל ביטוח ופיננסים",
+      "text_length": 28596,
+      "table_count": 0
+    }
+  ]
+}
