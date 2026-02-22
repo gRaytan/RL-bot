@@ -4,7 +4,7 @@ Embedding Service - Generate embeddings for text using OpenAI or Nebius.
 Supports:
 - OpenAI text-embedding-3-large (3072 dims) - best quality
 - OpenAI text-embedding-3-small (1536 dims) - faster/cheaper
-- Nebius bge-multilingual-gemma2 (768 dims) - multilingual/Hebrew support
+- Nebius bge-multilingual-gemma2 (3584 dims) - multilingual/Hebrew support
 - Nebius BAAI/bge-en-icl (4096 dims) - high quality
 """
 

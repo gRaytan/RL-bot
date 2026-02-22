@@ -32,7 +32,7 @@ class VectorStoreConfig:
     """Configuration for vector store."""
     collection_name: str = "harel_insurance_kb"
     persist_directory: str = "data/vectordb"
-    embedding_dimension: int = 3072
+    embedding_dimension: int = 3584  # bge-multilingual-gemma2 actual dimension
 
 
 class VectorStore:
