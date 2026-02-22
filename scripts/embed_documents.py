@@ -68,15 +68,23 @@ def embed_all_chunks(
     logger.info("Generating embeddings...")
     embeddings = embedding_service.embed_batch(texts, show_progress=True)
     
-    # Store in vector database
-    logger.info("Storing in vector database...")
-    vector_store.add_documents(
-        ids=ids,
-        texts=texts,
-        embeddings=embeddings,
-        metadatas=metadatas,
-    )
-    
+    # Store in vector database in batches (ChromaDB max batch size is 5461)
+    STORE_BATCH_SIZE = 5000
+    logger.info(f"Storing in vector database ({len(ids)} documents in batches of {STORE_BATCH_SIZE})...")
+
+    for i in range(0, len(ids), STORE_BATCH_SIZE):
+        batch_end = min(i + STORE_BATCH_SIZE, len(ids))
+        batch_num = (i // STORE_BATCH_SIZE) + 1
+        total_batches = (len(ids) + STORE_BATCH_SIZE - 1) // STORE_BATCH_SIZE
+
+        vector_store.add_documents(
+            ids=ids[i:batch_end],
+            texts=texts[i:batch_end],
+            embeddings=embeddings[i:batch_end],
+            metadatas=metadatas[i:batch_end],
+        )
+        logger.info(f"Stored batch {batch_num}/{total_batches} ({batch_end}/{len(ids)} documents)")
+
     logger.info(f"Successfully embedded and stored {len(chunks)} chunks")
 
 

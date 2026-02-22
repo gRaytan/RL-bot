@@ -192,7 +192,7 @@ def main():
     parser.add_argument("--dataset", default="data/evaluation/dev_set.json")
     parser.add_argument("--output", default="data/evaluation/results/rag_results.json")
     parser.add_argument("--no-rerank", action="store_true", help="Skip reranking")
-    parser.add_argument("--no-domain-filter", action="store_true", help="Don't filter by domain")
+    parser.add_argument("--use-domain-filter", action="store_true", help="Filter by domain (default: no filter)")
     parser.add_argument("--auto-domain", action="store_true", help="Use auto domain classification from TOC")
     parser.add_argument("--no-verification", action="store_true", help="Disable verification agent")
 
@@ -204,9 +204,9 @@ def main():
 
     print("\nInitializing RAG pipeline...")
     config = RAGConfig(
-        retrieval_top_k=30,
-        rerank_top_k=10,
-        final_context_k=5,
+        retrieval_top_k=50,       # Increased from 30 for better recall
+        rerank_top_k=15,          # Increased from 10
+        final_context_k=10,       # Optimal: 10 chunks to LLM
         use_reranker=not args.no_rerank,
         use_auto_domain=args.auto_domain,
         use_verification=not args.no_verification,
@@ -217,9 +217,9 @@ def main():
     )
     pipeline = RAGPipeline(config=config)
 
-    print(f"\nConfig: rerank={not args.no_rerank}, auto_domain={args.auto_domain}, verification={not args.no_verification}")
+    print(f"\nConfig: rerank={not args.no_rerank}, auto_domain={args.auto_domain}, verification={not args.no_verification}, domain_filter={args.use_domain_filter}")
     print("\nRunning RAG evaluation...")
-    results = run_rag_evaluation(pipeline, questions, use_domain_filter=not args.no_domain_filter)
+    results = run_rag_evaluation(pipeline, questions, use_domain_filter=args.use_domain_filter)
 
     # Save results
     output_path = Path(args.output)
